@@ -8,7 +8,6 @@ package structures;
  * @param <T> Le type des éléments stockés dans la file.
  */
 public class FileChainee<T> {
-
     /**
      * Une classe interne représentant un nœud dans la file chaînée.
      */
@@ -45,6 +44,7 @@ public class FileChainee<T> {
      */
     public void ajouterElement(T element) {
         Noeud nouveauNoeud = new Noeud(element);
+
         if (estVide()) {
             debut = nouveauNoeud;
             fin = nouveauNoeud;
@@ -64,11 +64,14 @@ public class FileChainee<T> {
         if (estVide()) {
             throw new IllegalStateException("La file est vide");
         }
+
         T valeurEnlevee = debut.valeur;
         debut = debut.suivant;
+
         if (debut == null) {
             fin = null;
         }
+
         return valeurEnlevee;
     }
 
