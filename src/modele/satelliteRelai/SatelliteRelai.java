@@ -28,60 +28,53 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import modele.communication.Message;
 
-public class SatelliteRelai extends Thread{
-	
+public class SatelliteRelai extends Thread {
 	static final int TEMPS_CYCLE_MS = 500;
 	static final double PROBABILITE_PERTE_MESSAGE = 0.15;
-	
+
 	ReentrantLock lock = new ReentrantLock();
-	
+
 	private Random rand = new Random();
-	
-	
+
 	/**
 	 * Méthode permettant d'envoyer un message vers le centre d'opération
+	 * 
 	 * @param msg, message à envoyer
 	 */
 	public void envoyerMessageVersCentrOp(Message msg) {
-		
 		lock.lock();
-		
-		try {
 
+		try {
 			/*
-			 * (5.1) Insérer votre code ici 
+			 * (5.1) Insérer votre code ici
 			 */
-			
-		}finally {
+		} finally {
 			lock.unlock();
 		}
 	}
-	
+
 	/**
 	 * Méthode permettant d'envoyer un message vers le rover
+	 * 
 	 * @param msg, message à envoyer
 	 */
 	public void envoyerMessageVersRover(Message msg) {
 		lock.lock();
-		
-		try {
 
+		try {
 			/*
-			 * (5.2) Insérer votre code ici 
+			 * (5.2) Insérer votre code ici
 			 */
-			
-		}finally {
+		} finally {
 			lock.unlock();
 		}
 	}
 
 	@Override
 	public void run() {
-		
-		while(true) {
-			
+		while (true) {
 			/*
-			 * (5.3) Insérer votre code ici 
+			 * (5.3) Insérer votre code ici
 			 */
 
 			// attend le prochain cycle
@@ -92,7 +85,4 @@ public class SatelliteRelai extends Thread{
 			}
 		}
 	}
-	
-	
-
 }
