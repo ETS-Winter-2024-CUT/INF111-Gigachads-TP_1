@@ -1,14 +1,14 @@
 package modele.communication;
 
 /**
- * Classe qui gère les compte uniques. 
- * 
+ * Classe qui gère les compte uniques.
+ *
  * NOTE: thread safe
- * 
+ *
  * services offerts:
  * 	- CompteurMessage
  * 	- getCompteActuel
- * 
+ *
  * @author Frederic Simard, ETS
  * @version Hiver, 2024
  */
@@ -27,7 +27,7 @@ public class CompteurMessage {
 
 	/**
 	 * Méthode permettant d'obtenir un compte incrémental unique.
-	 * 
+	 *
 	 * @return compte unique
 	 */
 	public int getCompteActuel() {

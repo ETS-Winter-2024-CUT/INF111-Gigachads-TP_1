@@ -2,22 +2,22 @@ package modele.satelliteRelai;
 
 /**
  * Classe simulant le satellite relai
- * 
+ *
  * Le satellite ne se contente que de transferer les messages du Rover vers le centre de contrôle
  * et vice-versa.
- * 
+ *
  * Le satellite exécute des cycles à intervale de TEMPS_CYCLE_MS. Période à
  * laquelle tous les messages en attente sont transmis. Ceci est implémenté à
  * l'aide d'une tâche (Thread).
- * 
+ *
  * Le relai satellite simule également les interférence dans l'envoi des messages.
- * 
+ *
  * Services offerts:
  *  - lierCentrOp
  *  - lierRover
  *  - envoyerMessageVersCentrOp
  *  - envoyerMessageVersRover
- * 
+ *
  * @author Frederic Simard, ETS
  * @version Hiver, 2024
  */
@@ -38,7 +38,7 @@ public class SatelliteRelai extends Thread {
 
 	/**
 	 * Méthode permettant d'envoyer un message vers le centre d'opération
-	 * 
+	 *
 	 * @param msg, message à envoyer
 	 */
 	public void envoyerMessageVersCentrOp(Message msg) {
@@ -55,7 +55,7 @@ public class SatelliteRelai extends Thread {
 
 	/**
 	 * Méthode permettant d'envoyer un message vers le rover
-	 * 
+	 *
 	 * @param msg, message à envoyer
 	 */
 	public void envoyerMessageVersRover(Message msg) {
