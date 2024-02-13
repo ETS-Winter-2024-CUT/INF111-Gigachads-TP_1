@@ -6,8 +6,8 @@ package modele.communication;
  * NOTE: thread safe
  *
  * services offerts:
- * 	- CompteurMessage
- * 	- getCompteActuel
+ *     - CompteurMessage
+ *     - getCompteActuel
  *
  * @author Frederic Simard, ETS
  * @version Hiver, 2024
@@ -16,25 +16,25 @@ package modele.communication;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class CompteurMessage {
-	private ReentrantLock lock = new ReentrantLock();
-	private int compte = 0;
+    private ReentrantLock lock = new ReentrantLock();
+    private int compte = 0;
 
-	/**
-	 * Constructeur par défaut
-	 */
-	public CompteurMessage() {
-	}
+    /**
+     * Constructeur par défaut
+     */
+    public CompteurMessage() {
+    }
 
-	/**
-	 * Méthode permettant d'obtenir un compte incrémental unique.
-	 *
-	 * @return compte unique
-	 */
-	public int getCompteActuel() {
-		int res = compte;
-		lock.lock();
-		compte++;
-		lock.unlock();
-		return res;
-	}
+    /**
+     * Méthode permettant d'obtenir un compte incrémental unique.
+     *
+     * @return compte unique
+     */
+    public int getCompteActuel() {
+        int res = compte;
+        lock.lock();
+        compte++;
+        lock.unlock();
+        return res;
+    }
 }

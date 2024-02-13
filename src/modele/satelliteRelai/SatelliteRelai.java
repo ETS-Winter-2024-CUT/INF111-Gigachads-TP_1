@@ -29,60 +29,60 @@ import java.util.concurrent.locks.ReentrantLock;
 import modele.communication.Message;
 
 public class SatelliteRelai extends Thread {
-	static final int TEMPS_CYCLE_MS = 500;
-	static final double PROBABILITE_PERTE_MESSAGE = 0.15;
+    static final int TEMPS_CYCLE_MS = 500;
+    static final double PROBABILITE_PERTE_MESSAGE = 0.15;
 
-	ReentrantLock lock = new ReentrantLock();
+    ReentrantLock lock = new ReentrantLock();
 
-	private Random rand = new Random();
+    private Random rand = new Random();
 
-	/**
-	 * Méthode permettant d'envoyer un message vers le centre d'opération
-	 *
-	 * @param msg, message à envoyer
-	 */
-	public void envoyerMessageVersCentrOp(Message msg) {
-		lock.lock();
+    /**
+     * Méthode permettant d'envoyer un message vers le centre d'opération
+     *
+     * @param msg, message à envoyer
+     */
+    public void envoyerMessageVersCentrOp(Message msg) {
+        lock.lock();
 
-		try {
-			/*
-			 * (5.1) Insérer votre code ici
-			 */
-		} finally {
-			lock.unlock();
-		}
-	}
+        try {
+            /*
+             * (5.1) Insérer votre code ici
+             */
+        } finally {
+            lock.unlock();
+        }
+    }
 
-	/**
-	 * Méthode permettant d'envoyer un message vers le rover
-	 *
-	 * @param msg, message à envoyer
-	 */
-	public void envoyerMessageVersRover(Message msg) {
-		lock.lock();
+    /**
+     * Méthode permettant d'envoyer un message vers le rover
+     *
+     * @param msg, message à envoyer
+     */
+    public void envoyerMessageVersRover(Message msg) {
+        lock.lock();
 
-		try {
-			/*
-			 * (5.2) Insérer votre code ici
-			 */
-		} finally {
-			lock.unlock();
-		}
-	}
+        try {
+            /*
+             * (5.2) Insérer votre code ici
+             */
+        } finally {
+            lock.unlock();
+        }
+    }
 
-	@Override
-	public void run() {
-		while (true) {
-			/*
-			 * (5.3) Insérer votre code ici
-			 */
+    @Override
+    public void run() {
+        while (true) {
+            /*
+             * (5.3) Insérer votre code ici
+             */
 
-			// attend le prochain cycle
-			try {
-				Thread.sleep(TEMPS_CYCLE_MS);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+            // attend le prochain cycle
+            try {
+                Thread.sleep(TEMPS_CYCLE_MS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
