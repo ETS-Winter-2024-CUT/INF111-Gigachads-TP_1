@@ -37,8 +37,8 @@ public class SatelliteRelai extends Thread {
 
     private Random rand = new Random();
 
-    private FileChainee fcControle = new FileChainee<Message>();
-    private FileChainee fcRover = new FileChainee<Message>();
+    private FileChainee<Message> fcControle = new FileChainee<Message>();
+    private FileChainee<Message> fcRover = new FileChainee<Message>();
 
     /**
      * Méthode permettant d'envoyer un message vers le centre d'opération
