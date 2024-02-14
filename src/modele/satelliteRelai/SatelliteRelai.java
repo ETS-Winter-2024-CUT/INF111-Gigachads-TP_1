@@ -27,6 +27,7 @@ import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 import modele.communication.Message;
+import structures.FileChainee;
 
 public class SatelliteRelai extends Thread {
     static final int TEMPS_CYCLE_MS = 500;
@@ -35,6 +36,9 @@ public class SatelliteRelai extends Thread {
     ReentrantLock lock = new ReentrantLock();
 
     private Random rand = new Random();
+
+    private FileChainee fcControle = new FileChainee<Message>();
+    private FileChainee fcRover = new FileChainee<Message>();
 
     /**
      * Méthode permettant d'envoyer un message vers le centre d'opération
@@ -45,9 +49,16 @@ public class SatelliteRelai extends Thread {
         lock.lock();
 
         try {
-            /*
-             * (5.1) Insérer votre code ici
-             */
+            //Declarer le num random et verifier si il peut envoyer le message
+            double randNum = rand.nextDouble();
+            if(randNum >PROBABILITE_PERTE_MESSAGE){
+
+                //Ajouter msg a la file qui va vers le rover
+                fcControle.ajouterElement(msg);
+            }else{
+                //Declarer que le message est perdu si l'interference l'emporte
+                System.out.println("Message Perdu!");
+            }
         } finally {
             lock.unlock();
         }
@@ -62,9 +73,16 @@ public class SatelliteRelai extends Thread {
         lock.lock();
 
         try {
-            /*
-             * (5.2) Insérer votre code ici
-             */
+            //Declarer le num random et verifier si il peut envoyer le message
+            double randNum = rand.nextDouble();
+            if(randNum >PROBABILITE_PERTE_MESSAGE){
+
+                //Ajouter msg a la file qui va vers le rover
+                fcRover.ajouterElement(msg);
+            }else{
+                //Declarer que le message est perdu si l'interference l'emporte
+                System.out.println("Message Perdu!");
+            }
         } finally {
             lock.unlock();
         }
@@ -73,9 +91,10 @@ public class SatelliteRelai extends Thread {
     @Override
     public void run() {
         while (true) {
-            /*
-             * (5.3) Insérer votre code ici
-             */
+
+            //Enlever les elements des 2 files
+            fcControle.enleverElement();
+            fcRover.enleverElement();
 
             // attend le prochain cycle
             try {
