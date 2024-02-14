@@ -22,8 +22,7 @@ public class TestVect2D {
 
         // Test de la méthode diviser
         vecteur2.diviser(2);
-        System.out.println(
-                "Vecteur 2 après division : x = " + vecteur2.getLongueurX() + ", y = " + vecteur2.getLongueurY());
+        System.out.println("Vecteur 2 après division : x = " + vecteur2.getLongueurX() + ", y = " + vecteur2.getLongueurY());
 
         // Test de la méthode ajouter
         vecteur1.ajouter(2.0, 1.0);
