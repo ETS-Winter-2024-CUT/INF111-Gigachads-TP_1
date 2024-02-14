@@ -116,9 +116,9 @@ public class Vect2D {
     }
 
     /**
-     * Compare ce vecteur à un autre objet.
+     * Compare ce vecteur à un autre vecteur.
      *
-     * @param vecteur L'autre objet.
+     * @param vecteur L'autre vecteur.
      * @return Vrai si les deux objets sont égaux, faux sinon.
      */
     @Override
