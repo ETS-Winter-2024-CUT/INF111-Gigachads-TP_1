@@ -85,9 +85,7 @@ public abstract class TransporteurMessage extends Thread {
                 // On ajoute le message à la position voulue
                 messagesRecus.add(position, msg);
             }
-        } finally
-
-        {
+        } finally {
             lock.unlock();
         }
     }
