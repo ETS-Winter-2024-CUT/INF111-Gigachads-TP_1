@@ -37,6 +37,7 @@ package modele.communication;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -49,10 +50,13 @@ public abstract class TransporteurMessage extends Thread {
     // lock qui protège la liste de messages reçu
     private ReentrantLock lock = new ReentrantLock();
 
+    // liste de message recu par le transporteur
+    private List<Message> messagesRecus;
+    // liste de message envoyer par le transporteur
+    private List<Message> messagesEnvoyes; // is gonna be usefull later
+
     protected Queue<Message> fileMessages = new LinkedList<>(); // File de messages reçus
     protected boolean nackEnvoye = false; // Indique si un Nack a été envoyé
-    protected Set<Message> messagesEnvoyes = new HashSet<>(); // Ensemble de messages envoyés
-    protected Set<Message> messagesRecus = new HashSet<>(); // Ensemble de messages reçus
 
     /**
      * Constructeur, initialise le compteur de messages unique
