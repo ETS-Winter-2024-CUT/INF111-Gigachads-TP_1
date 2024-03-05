@@ -35,13 +35,24 @@ package modele.communication;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
+
+import modele.communication.*;
 
 public abstract class TransporteurMessage extends Thread {
     // compteur de message
     protected CompteurMessage compteurMsg;
     // lock qui protège la liste de messages reçu
     private ReentrantLock lock = new ReentrantLock();
+
+    protected Queue<Message> fileMessages = new LinkedList<>(); // File de messages reçus
+    protected boolean nackEnvoye = false; // Indique si un Nack a été envoyé
+    protected Set<Message> messagesEnvoyes = new HashSet<>(); // Ensemble de messages envoyés
+    protected Set<Message> messagesRecus = new HashSet<>(); // Ensemble de messages reçus
 
     /**
      * Constructeur, initialise le compteur de messages unique
@@ -78,11 +89,42 @@ public abstract class TransporteurMessage extends Thread {
 
         while (true) {
             lock.lock();
-
             try {
-                /*
-                 * (6.3.4) Insérer votre code ici
-                 */
+                Message msg = fileMessages.poll();
+
+                if (msg == null || nackEnvoye) {
+                    break;
+                }
+
+                // Si le message est un Nack
+                if (msg instanceof Nack) {
+                    Nack nack = (Nack) msg;
+                    int compteManquant = nack.getCompte();
+
+                    while (!messagesEnvoyes.isEmpty()) {
+                        Message messageEnvoye = messagesEnvoyes.peek();
+
+                        if (messageEnvoye instanceof Nack || messageEnvoye.getCompte() < compteManquant) {
+                            messagesEnvoyes.poll();
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Message à envoyer
+                    Message messageAEnvoyer = messagesEnvoyes.peek();
+                    envoyerMessage(messageAEnvoyer);
+                    messagesRecus.remove(nack);
+                } else if (msg.getCompte() != compteCourant) {
+                    envoyerMessage(new Nack(compteCourant));
+                    nackEnvoye = true;
+                } else if (msg.getCompte() < compteCourant) {
+                    System.out.println("Message dupliqué rejeté : " + msg);
+                } else {
+                    gestionnaireMessage(msg);
+                    fileMessages.poll();
+                    compteCourant++;
+                }
             } finally {
                 lock.unlock();
             }
