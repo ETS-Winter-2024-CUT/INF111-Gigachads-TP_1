@@ -110,44 +110,51 @@ public abstract class TransporteurMessage extends Thread {
         while (true) {
             lock.lock();
             try {
-                Message msg = fileMessages.poll(); // recupere le dernier message de la file
+                boolean nackEnvoyer = false;
 
-                if (msg == null || nackEnvoye) { // si la file est vide, ou un cacj a ete envoyer, aucune action
-                                                 // necessaire
-                    break;
-                }
+                // Tant qu'il y a des messages reçus et qu'aucun Nack n'a été envoyé
+                while (!messagesRecus.isEmpty() && !nackEnvoyer) {
+                    Message msg = messagesRecus.get(0);// Récupération du premier message reçu
 
-                // Si le message est un Nack
-                if (msg instanceof Nack) {
-                    Nack nack = (Nack) msg;
-                    int compteManquant = nack.getCompte();
-
-                    // parcour la liste des message
-                    while (!messagesEnvoyes.isEmpty()) {
-                        Message messageEnvoye = messagesEnvoyes.peek();
-
-                        // quand on trouve le message manquant, on delete tt les message d'apres
-                        if (messageEnvoye instanceof Nack || messageEnvoye.getCompte() < compteManquant) {
-                            messagesEnvoyes.poll();
-                        } else {
-                            break;
+                    if (msg instanceof Nack) {
+                        int compteManquant = ((Nack) msg).getCompte(); // on vas chercher le compte manquant
+                        Set<Message> messagesManquants = new HashSet<>(); // ensemble pour stocker les messages
+                                                                          // manquants
+                        for (int i = 0; i < messagesEnvoyes.size(); i++) {
+                            Message messageEnvoye = messagesEnvoyes.poll(); // Récupération et suppression du premier
+                                                                            // message
+                            if (messageEnvoye instanceof Nack || messageEnvoye.getCompte() < compteManquant) {
+                                continue;
+                            } else if (messageEnvoye.getCompte() == compteManquant) { // ajout du message dans les
+                                                                                      // messages manquant
+                                messagesManquants.add(messageEnvoye);
+                            } else { // ajoue du message envoyer a la fin de la liste
+                                messagesEnvoyes.add(messageEnvoye);
+                                break;
+                            }
                         }
-                    }
 
-                    // Message à envoyer
-                    Message messageAEnvoyer = messagesEnvoyes.peek();
-                    envoyerMessage(messageAEnvoyer);
-                    messagesRecus.remove(nack); // on eneleve le nack
-                } else if (msg.getCompte() != compteCourant) {
-                    // renvoie un nack qui dit le nombre de message manquant
-                    envoyerMessage(new Nack(compteCourant));
-                    nackEnvoye = true;
-                } else if (msg.getCompte() < compteCourant) {
-                    System.out.println("Message dupliqué rejeté : " + msg);
-                } else {
-                    gestionnaireMessage(msg);
-                    fileMessages.poll();
-                    compteCourant++;
+                        // si ya des message manquant, on les renvoie
+                        if (!messagesManquants.isEmpty()) {
+                            for (Message manquant : messagesManquants) {
+                                envoyerMessage(manquant);
+                            }
+                            messagesRecus.remove(msg); // on enleve le nack
+                        } else {
+                            nackEnvoyer = true; // un nack a ete envoyer
+                        }
+                    } else if (msg.getCompte() != compteCourant) { // si le nb de message != compte courant, on envoie
+                                                                   // un nack
+                        envoyerMessage(new Nack(compteCourant));
+                        nackEnvoyer = true;
+                    } else if (msg.getCompte() < compteCourant) {
+                        System.out.println("Message dupliqué rejeté : " + msg);
+                        messagesRecus.remove(msg);
+                    } else {
+                        gestionnaireMessage(msg);
+                        messagesRecus.remove(msg);
+                        compteCourant++;
+                    }
                 }
             } finally {
                 lock.unlock();
