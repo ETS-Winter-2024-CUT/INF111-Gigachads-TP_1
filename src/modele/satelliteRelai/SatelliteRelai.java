@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
+import modele.centreControle.CentreControle;
 import modele.communication.Message;
+import modele.rover.Rover;
 import structures.FileChainee;
 
 public class SatelliteRelai extends Thread {
@@ -40,6 +42,20 @@ public class SatelliteRelai extends Thread {
     private FileChainee<Message> fcControle = new FileChainee<Message>();
     private FileChainee<Message> fcRover = new FileChainee<Message>();
 
+    //reference au CentreControle et au Rover
+    private CentreControle centreControle;
+    private Rover rover;
+
+    // Méthode pour lier le CentreControle
+    public void lierCentrOp(CentreControle centreControle) {
+        this.centreControle = centreControle;
+    }
+
+    // Méthode pour lier le Rover
+    public void lierRover(Rover rover) {
+        this.rover = rover;
+    }
+
     /**
      * Méthode permettant d'envoyer un message vers le centre d'opération
      *
@@ -49,14 +65,14 @@ public class SatelliteRelai extends Thread {
         lock.lock();
 
         try {
-            //Declarer le num random et verifier si il peut envoyer le message
+            // Declarer le num random et verifier si il peut envoyer le message
             double randNum = rand.nextDouble();
-            if(randNum >PROBABILITE_PERTE_MESSAGE){
+            if (randNum > PROBABILITE_PERTE_MESSAGE) {
 
-                //Ajouter msg a la file qui va vers le rover
+                // Ajouter msg a la file qui va vers le rover
                 fcControle.ajouterElement(msg);
-            }else{
-                //Declarer que le message est perdu si l'interference l'emporte
+            } else {
+                // Declarer que le message est perdu si l'interference l'emporte
                 System.out.println("Message Perdu!");
             }
         } finally {
@@ -73,14 +89,14 @@ public class SatelliteRelai extends Thread {
         lock.lock();
 
         try {
-            //Declarer le num random et verifier si il peut envoyer le message
+            // Declarer le num random et verifier si il peut envoyer le message
             double randNum = rand.nextDouble();
-            if(randNum >PROBABILITE_PERTE_MESSAGE){
+            if (randNum > PROBABILITE_PERTE_MESSAGE) {
 
-                //Ajouter msg a la file qui va vers le rover
+                // Ajouter msg a la file qui va vers le rover
                 fcRover.ajouterElement(msg);
-            }else{
-                //Declarer que le message est perdu si l'interference l'emporte
+            } else {
+                // Declarer que le message est perdu si l'interference l'emporte
                 System.out.println("Message Perdu!");
             }
         } finally {
@@ -92,7 +108,7 @@ public class SatelliteRelai extends Thread {
     public void run() {
         while (true) {
 
-            //Enlever les elements des 2 files
+            // Enlever les elements des 2 files
             fcControle.enleverElement();
             fcRover.enleverElement();
 
