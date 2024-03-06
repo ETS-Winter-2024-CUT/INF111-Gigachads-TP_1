@@ -21,6 +21,6 @@ public class CentreControle extends TransporteurMessage {
     // Implémentation de la méthode abstraite pour CentreControle
     @Override
     protected void gestionnaireMessage(Message msg) {
-        System.out.println("Centre de controle: Messafe reçu - " + msg.getNumero());
+        System.out.println("Centre de controle: Message reçu - " + msg.getNumero());
     }
 }
