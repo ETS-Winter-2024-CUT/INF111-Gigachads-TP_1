@@ -109,8 +109,12 @@ public class SatelliteRelai extends Thread {
         while (true) {
 
             // Enlever les elements des 2 files
-            fcControle.enleverElement();
-            fcRover.enleverElement();
+            if (!fcControle.estVide()) {
+                fcControle.enleverElement();
+            }
+            if (!fcRover.estVide()) {
+                fcRover.enleverElement();
+            }
 
             // attend le prochain cycle
             try {
