@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 import modele.communication.*;
@@ -63,6 +64,8 @@ public abstract class TransporteurMessage extends Thread {
      */
     public TransporteurMessage() {
         compteurMsg = new CompteurMessage();
+        this.messagesRecus = new ArrayList<>();
+        this.messagesEnvoyes = new ArrayList<>();
     }
 
     /**
@@ -76,9 +79,22 @@ public abstract class TransporteurMessage extends Thread {
         lock.lock();
 
         try {
-            /*
-             * (6.3.3) Insérer votre code ici
-             */
+            if (msg instanceof Nack) {
+                // Si le message reçu est un Nack, on le met au début de la liste
+                messagesRecus.add(0, msg);
+            } else {
+                // Sinon, on calcule sa position selon le compteur
+                int position = 0;
+                for (int i = 0; i < messagesRecus.size(); i++) {
+                    Message currentMsg = messagesRecus.get(i);
+                    if (msg.getCompte() < currentMsg.getCompte()) {
+                        break;
+                    }
+                    position++;
+                }
+                // On ajoute le message à la position voulue
+                messagesRecus.add(position, msg);
+            }
         } finally {
             lock.unlock();
         }
