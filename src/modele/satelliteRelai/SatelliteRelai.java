@@ -42,7 +42,7 @@ public class SatelliteRelai extends Thread {
     private FileChainee<Message> fcControle = new FileChainee<Message>();
     private FileChainee<Message> fcRover = new FileChainee<Message>();
 
-    //reference au CentreControle et au Rover
+    // reference au CentreControle et au Rover
     private CentreControle centreControle;
     private Rover rover;
 

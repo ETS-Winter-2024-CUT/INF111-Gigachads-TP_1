@@ -52,9 +52,9 @@ public abstract class TransporteurMessage extends Thread {
     private ReentrantLock lock = new ReentrantLock();
 
     // liste de message recu par le transporteur
-    private List<Message> messagesRecus;
+    public List<Message> messagesRecus;
     // liste de message envoyer par le transporteur
-    private List<Message> messagesEnvoyes; // is gonna be usefull later
+    public Queue<Message> messagesEnvoyes;
 
     protected Queue<Message> fileMessages = new LinkedList<>(); // File de messages reçus
     protected boolean nackEnvoye = false; // Indique si un Nack a été envoyé
@@ -65,7 +65,7 @@ public abstract class TransporteurMessage extends Thread {
     public TransporteurMessage() {
         compteurMsg = new CompteurMessage();
         this.messagesRecus = new ArrayList<>();
-        this.messagesEnvoyes = new ArrayList<>();
+        this.messagesEnvoyes = new LinkedList<>();
     }
 
     /**
@@ -110,9 +110,10 @@ public abstract class TransporteurMessage extends Thread {
         while (true) {
             lock.lock();
             try {
-                Message msg = fileMessages.poll(); //recupere le dernier message de la file
+                Message msg = fileMessages.poll(); // recupere le dernier message de la file
 
-                if (msg == null || nackEnvoye) {   //si la file est vide, ou un cacj a ete envoyer, aucune action necessaire
+                if (msg == null || nackEnvoye) { // si la file est vide, ou un cacj a ete envoyer, aucune action
+                                                 // necessaire
                     break;
                 }
 
@@ -121,7 +122,7 @@ public abstract class TransporteurMessage extends Thread {
                     Nack nack = (Nack) msg;
                     int compteManquant = nack.getCompte();
 
-                    //parcour la liste des message
+                    // parcour la liste des message
                     while (!messagesEnvoyes.isEmpty()) {
                         Message messageEnvoye = messagesEnvoyes.peek();
 
@@ -136,16 +137,16 @@ public abstract class TransporteurMessage extends Thread {
                     // Message à envoyer
                     Message messageAEnvoyer = messagesEnvoyes.peek();
                     envoyerMessage(messageAEnvoyer);
-                    messagesRecus.remove(nack);    // on eneleve le nack
+                    messagesRecus.remove(nack); // on eneleve le nack
                 } else if (msg.getCompte() != compteCourant) {
-                    //renvoie un nack qui dit le nombre de message manquant
+                    // renvoie un nack qui dit le nombre de message manquant
                     envoyerMessage(new Nack(compteCourant));
                     nackEnvoye = true;
                 } else if (msg.getCompte() < compteCourant) {
                     System.out.println("Message dupliqué rejeté : " + msg);
                 } else {
                     gestionnaireMessage(msg);
-                    fileMessages.poll();          //Can you comment this part?!
+                    fileMessages.poll();
                     compteCourant++;
                 }
             } finally {
