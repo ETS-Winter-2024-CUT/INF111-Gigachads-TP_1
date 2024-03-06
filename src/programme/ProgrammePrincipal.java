@@ -3,6 +3,8 @@ package programme;
 import java.io.IOException;
 
 import modele.satelliteRelai.SatelliteRelai;
+import modele.centreControle.CentreControle;
+import modele.rover.Rover;
 
 public class ProgrammePrincipal {
 
@@ -15,5 +17,11 @@ public class ProgrammePrincipal {
     public static void main(String[] args) {
         SatelliteRelai satellite = new SatelliteRelai();
         satellite.start();
+
+        CentreControle centreControle = new CentreControle(satellite);
+        Rover rover = new Rover(satellite);
+
+        satellite.lierCentrOp(centreControle);
+        satellite.lierRover(rover);
     }
 }
