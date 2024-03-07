@@ -38,7 +38,6 @@ public class ProgrammePrincipal {
             testMessage test = new testMessage(i, "Contenu : " + i);
             centreControle.envoyerMessage(test);
         }
-
     }
 
     // Méthode de test statique
@@ -83,5 +82,4 @@ public class ProgrammePrincipal {
             System.out.println("Test réussi : exception levée car la file est vide");
         }
     }
-
 }
