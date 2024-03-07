@@ -26,8 +26,11 @@ public class ProgrammePrincipal {
         satellite.lierCentrOp(centreControle);
         satellite.lierRover(rover);
 
+        System.out.println("Test Vecteurs:\n");
         testVect();
+        System.out.println("\n Test Files:\n");
         testFile();
+        System.out.println("\n");
 
         satellite.start();
         rover.start();
