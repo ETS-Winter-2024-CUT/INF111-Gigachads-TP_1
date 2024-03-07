@@ -100,10 +100,10 @@ public abstract class TransporteurMessage extends Thread {
     // 6.3.4
     public void run() {
         // Initialise le compteur de message courant
-        int compteCourant = 0;
+        int compteCourant = 1;
         // Indique si un Nack a été envoyé
         boolean nackEnvoye = false;
-
+        /*
         while (true) { // Boucle infinie
 
             lock.lock();
@@ -164,7 +164,7 @@ public abstract class TransporteurMessage extends Thread {
             // Obtient un nouveau compte unique (CompteurMsg)
             compteCourant = compteurMsg.getCompteActuel();
             // Envoi un message NoOp
-            envoyerMessage(new NoOp(compteCourant));
+            //envoyerMessage(new NoOp(compteCourant));
             nackEnvoye = false; // Réinitialise nackEnvoye pour la prochaine boucle
 
             // Pause, cycle de traitement de messages
@@ -173,6 +173,42 @@ public abstract class TransporteurMessage extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+        */
+
+        while (true) {
+            if(!messagesRecus.isEmpty()){
+                Message courant = messagesRecus.get(0);
+                messagesRecus.remove(0);
+
+                if(courant.getCompte() < compteCourant){
+                    continue;
+                }
+
+                //Si on recoit un nack on doit renvoyer le message.
+                if(courant instanceof Nack){
+                    int compteManquant = courant.getCompte();
+                    for(Message message: messagesEnvoyes){
+                        if(message.getCompte() < compteManquant){
+                            messagesEnvoyes.pop();
+                        }
+                    }
+                    Message aRenvoyer = messagesEnvoyes.peek();
+                    System.out.println("ROVER:: RENVOYER MESSAGE!! #" + aRenvoyer.getCompte());
+                    envoyerMessage(aRenvoyer);
+                    continue;
+                }
+
+                if(courant.getCompte() > compteCourant){
+                    Nack nack = new Nack(compteCourant);
+                    System.out.println("ROVER:: ENVOYER NACK!! #" + nack.getCompte());
+                    envoyerMessage(nack);
+                }
+
+                compteCourant++;
+                gestionnaireMessage(courant);
+            }
+
         }
     }
 

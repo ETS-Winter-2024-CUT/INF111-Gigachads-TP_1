@@ -24,7 +24,6 @@ public class ProgrammePrincipal {
 
         satellite.lierCentrOp(centreControle);
         satellite.lierRover(rover);
-
         // System.out.println("Test Vecteurs:\n");
         // testVect();
         // System.out.println("\nTest Files:\n");
@@ -35,7 +34,7 @@ public class ProgrammePrincipal {
         rover.start();
         centreControle.start();
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 10; i++) {
             testMessage test = new testMessage(i, "Contenu : " + i);
             centreControle.envoyerMessage(test);
         }
