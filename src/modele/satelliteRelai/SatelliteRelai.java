@@ -105,19 +105,19 @@ public class SatelliteRelai extends Thread {
             while (!fileVersCentrOp.isEmpty()) {
                 Message msg = fileVersCentrOp.poll();
 
-                System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
-
                 if (centreControle != null) {
                     centreControle.envoyerMessage(msg);
+                } else {
+                    System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
                 }
             }
             while (!fileVersRover.isEmpty()) {
                 Message msg = fileVersRover.poll();
 
-                System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
-
                 if (rover != null) {
                     rover.envoyerMessage(msg);
+                } else {
+                    System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
                 }
             }
             try {
