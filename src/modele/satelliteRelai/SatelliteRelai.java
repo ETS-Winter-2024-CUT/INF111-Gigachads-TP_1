@@ -30,6 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import modele.centreControle.CentreControle;
 import modele.communication.Message;
 import modele.rover.Rover;
+import structures.FileChainee;
 
 public class SatelliteRelai extends Thread {
 
