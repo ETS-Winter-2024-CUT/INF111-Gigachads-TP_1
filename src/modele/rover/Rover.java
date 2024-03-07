@@ -21,6 +21,7 @@ public class Rover extends TransporteurMessage {
     // Méthodepour gérer la réception d'un message
     protected void gestionnaireMessage(Message msg) {
         // Affiche un message indiquant la réception et le traitement du message
+        System.out.println("\n");
         System.out.println("Rover: Message reçu - " + msg.getCompte());
         System.out.println("Rover: Traitement du message...");
         System.out.println("Rover: Message traité.");
