@@ -9,7 +9,7 @@ package modele.communication;
  */
 public class NoOp extends Message {
     // paramètre "id" transmis au constructeur de la classe parente "Message"
-    public NoOp(int id) {
-        super(id);
+    public NoOp(int compte) {
+        super(compte);
     }
 }
