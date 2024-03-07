@@ -27,11 +27,12 @@ public class ProgrammePrincipal {
 
         testVect();
         testFile();
-        testCommunication(centreControle, rover, satellite);
 
         satellite.start();
         rover.start();
         centreControle.start();
+
+        testCommunication(centreControle, rover, satellite);
     }
 
     // Méthode de test statique
