@@ -33,7 +33,7 @@ import modele.rover.Rover;
 
 public class SatelliteRelai extends Thread {
 
-    static final int TEMPS_CYCLE_MS = 100;
+    static final int TEMPS_CYCLE_MS = 500;
     static final double PROBABILITE_PERTE_MESSAGE = 0.15;
 
     ReentrantLock lock = new ReentrantLock();
@@ -113,8 +113,8 @@ public class SatelliteRelai extends Thread {
                     System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
                 } else {
                     System.out.println("SatelliteRelai: Evoi d'un message vers centre Controle! Message #"
-                                    + msg.getCompte());
-                    centreControle.receptionMessageDeSatellite(msg);
+                            + msg.getCompte());
+
                 }
             }
             if (!fileVersRover.isEmpty()) {
@@ -124,7 +124,6 @@ public class SatelliteRelai extends Thread {
                     System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
                 } else {
                     System.out.println("SatelliteRelai: Evoi d'un message vers Rover! Message #" + msg.getCompte());
-                    rover.receptionMessageDeSatellite(msg);
                 }
             }
             try {
