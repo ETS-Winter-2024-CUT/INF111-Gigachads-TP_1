@@ -21,10 +21,10 @@ public class CentreControle extends TransporteurMessage {
     // Méthode protégée pour gérer la réception d'un message
     protected void gestionnaireMessage(Message msg) {
         // Affiche un message indiquant la réception et le traitement du message
-        System.out.println("\n");
-        System.out.println("Centre de controle: Message reçu - " + msg.getCompte());
-        System.out.println("Centre de controle: Traitement du message...");
-        System.out.println("Centre de controle: Message traité.");
-        System.out.println("\n");
+        System.out.println("\n--CENTRE DE CONTROLE-------------");
+        System.out.println("| Message reçu - " + msg.getCompte() + "\t\t|");
+        System.out.println("| Traitement du message...\t|");
+        System.out.println("| Message traité.\t\t|");
+        System.out.println("---------------------------------\n");
     }
 }

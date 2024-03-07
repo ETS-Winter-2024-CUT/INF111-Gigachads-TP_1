@@ -104,7 +104,7 @@ public class SatelliteRelai extends Thread {
     @Override
     public void run() {
         while (true) {
-            System.out.println("SatelliteRelai: Traitement des messages...");
+            System.out.println("\nSatelliteRelai: Traitement des messages...\n");
 
             // Envoi des messages vers le Centre de contrôle
             if (!fileVersCentrOp.isEmpty()) {
