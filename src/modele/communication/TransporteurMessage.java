@@ -47,9 +47,9 @@ public abstract class TransporteurMessage extends Thread {
     private ReentrantLock lock = new ReentrantLock();
 
     // Liste pour stocker les messages reçus
-    private List<Message> messagesRecus;
+    protected List<Message> messagesRecus;
     // Liste pour stocker les messages envoyés
-    private LinkedList<Message> messagesEnvoyes; // apparement I need that for peek
+    protected LinkedList<Message> messagesEnvoyes; // apparement I need that for peek
 
     /**
      * Constructeur, initialise le compteur de messages unique
@@ -100,15 +100,15 @@ public abstract class TransporteurMessage extends Thread {
     // 6.3.4
     public void run() {
         // Initialise le compteur de message courant
-        int compteCourant = 1;
-        // Indique si un Nack a été envoyé
-        boolean nackEnvoye = false;
+        int compteCourant = 0;
 
         while (true) { // Boucle infinie
 
             lock.lock();
 
             try {
+                // Indique si un Nack a été envoyé
+                boolean nackEnvoye = false;
                 // Tant qu'il y a des messages et qu'aucun Nack n'a été envoyé
                 while (!messagesRecus.isEmpty() && !nackEnvoye) {
                     // Obtient le prochain message à gérer (début de la liste)
@@ -156,16 +156,13 @@ public abstract class TransporteurMessage extends Thread {
                         // Rejete le message, car il s'agit d'un duplicat
                         messagesRecus.remove(prochainMessage);
                     }
+
+                    // Envoi un message NoOp
+                     envoyerMessage(new NoOp(compteurMsg.getCompteActuel()));
                 }
             } finally {
                 lock.unlock();
             }
-
-            // Obtient un nouveau compte unique (CompteurMsg)
-            compteCourant = compteurMsg.getCompteActuel();
-            // Envoi un message NoOp
-            // envoyerMessage(new NoOp(compteCourant));
-            nackEnvoye = false; // Réinitialise nackEnvoye pour la prochaine boucle
 
             // Pause, cycle de traitement de messages
             try {

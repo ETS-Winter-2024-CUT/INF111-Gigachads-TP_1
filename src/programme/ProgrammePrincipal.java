@@ -34,10 +34,10 @@ public class ProgrammePrincipal {
         rover.start();
         centreControle.start();
 
-        for (int i = 1; i <= 10; i++) {
-            testMessage test = new testMessage(i, "Contenu : " + i);
-            centreControle.envoyerMessage(test);
-        }
+        // for (int i = 1; i <= 10; i++) {
+        //     centreControle.testCommunicationCC();
+        //     rover.testCommunicationRover();
+        // }
     }
 
     // Méthode de test statique
