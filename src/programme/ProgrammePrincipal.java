@@ -49,8 +49,7 @@ public class ProgrammePrincipal {
     }
 
     public static void testFile() {
-        FileChainee filesChainee = new FileChainee();
-        FileChainee.File<Integer> file = filesChainee.new File<>();
+        FileChainee<Integer> file = new FileChainee<>();
 
         // Test ajouterElement et estVide
         System.out.println("Test ajouterElement et estVide:");
