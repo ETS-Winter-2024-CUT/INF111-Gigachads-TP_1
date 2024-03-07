@@ -10,17 +10,6 @@ public class Rover extends TransporteurMessage {
 
     public Rover(SatelliteRelai satelliteRelai) {
         this.satelliteRelai = satelliteRelai;
-        compte = 0; // Initialise le nombre de messages reçus à zéro
-    }
-
-    // Méthode pour augmenter le compteur de messages reçus
-    public void incrementerCompte() {
-        compte++;
-    }
-
-    // Méthode pour obtenir le nombre de messages reçus
-    public int getCompte() {
-        return compte;
     }
 
     // Méthode permettant d'envoyer un message vers le satellite relai
@@ -35,5 +24,6 @@ public class Rover extends TransporteurMessage {
         System.out.println("Rover: Message reçu - " + msg.getCompte());
         System.out.println("Rover: Traitement du message...");
         System.out.println("Rover: Message traité.");
+        System.out.println("\n");
     }
 }

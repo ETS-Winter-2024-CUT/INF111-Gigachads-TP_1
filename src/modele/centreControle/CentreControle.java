@@ -24,5 +24,6 @@ public class CentreControle extends TransporteurMessage {
         System.out.println("Centre de controle: Message reçu - " + msg.getCompte());
         System.out.println("Centre de controle: Traitement du message...");
         System.out.println("Centre de controle: Message traité.");
+        System.out.println("\n");
     }
 }
