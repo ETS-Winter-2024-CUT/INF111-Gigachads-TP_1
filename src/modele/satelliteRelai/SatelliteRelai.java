@@ -32,6 +32,9 @@ import structures.FileChainee;
 
 public class SatelliteRelai extends Thread {
 
+    /**
+     * Declaration des variables
+     */
     static final int TEMPS_CYCLE_MS = 500;
     static final double PROBABILITE_PERTE_MESSAGE = 0.15;
 
@@ -45,16 +48,24 @@ public class SatelliteRelai extends Thread {
     private CentreControle centreControle;
     private Rover rover;
 
-    // Méthode pour lier le Centre de contrôle
+    /**
+     * Methode pour lier un centre de controle au satellite
+     * @param centreControle centre de controle a lier a ce satellite
+     */
     public void lierCentrOp(CentreControle centreControle) {
         this.centreControle = centreControle;
     }
-
-    // Méthode pour lier le Rover
+    /**
+     * Methode pour lier un rover au satellite
+     * @param rover rover a lier a ce satellite
+     */
     public void lierRover(Rover rover) {
         this.rover = rover;
     }
 
+    /**
+     * Constructeur par defaut
+     */
     public SatelliteRelai() {
         fileVersCentrOp = new FileChainee<>();
         fileVersRover = new FileChainee<>();
@@ -103,16 +114,19 @@ public class SatelliteRelai extends Thread {
         while (true) {
             System.out.println("\nSatelliteRelai: Traitement des messages...\n");
 
+            //Envoyer les messages dans la file en direction du centre de commandes
             while (!fileVersCentrOp.estVide()) {
                 Message msg = fileVersCentrOp.enleverElement();
                 centreControle.receptionMessageDeSatellite(msg);
             }
 
+            //Envoyer les messages dans la file en direction du rover
             while (!fileVersRover.estVide()) {
                 Message msg = fileVersRover.enleverElement();
                 rover.receptionMessageDeSatellite(msg);
             }
 
+            //Delai d'operation
             try {
                 Thread.sleep(TEMPS_CYCLE_MS);
             } catch (InterruptedException e) {

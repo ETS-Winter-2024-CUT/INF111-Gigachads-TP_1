@@ -170,42 +170,6 @@ public abstract class TransporteurMessage extends Thread {
         }
     }
 
-    // while (true) {
-    // if(!messagesRecus.isEmpty()){
-    // Message courant = messagesRecus.get(0);
-    // messagesRecus.remove(0);
-
-    // if(courant.getCompte() < compteCourant){
-    // continue;
-    // }
-
-    // //Si on recoit un nack on doit renvoyer le message.
-    // if(courant instanceof Nack){
-    // int compteManquant = courant.getCompte();
-    // for(Message message: messagesEnvoyes){
-    // if(message.getCompte() < compteManquant){
-    // messagesEnvoyes.pop();
-    // }
-    // }
-    // Message aRenvoyer = messagesEnvoyes.peek();
-    // System.out.println("ROVER:: RENVOYER MESSAGE!! #" + aRenvoyer.getCompte());
-    // envoyerMessage(aRenvoyer);
-    // continue;
-    // }
-
-    // if(courant.getCompte() > compteCourant){
-    // Nack nack = new Nack(compteCourant);
-    // System.out.println("ROVER:: ENVOYER NACK!! #" + nack.getCompte());
-    // envoyerMessage(nack);
-    // }
-
-    // compteCourant++;
-    // gestionnaireMessage(courant);
-    // }
-
-    // }
-    // }
-
     /**
      * méthode abstraite utilisé pour envoyer un message
      *

@@ -1,5 +1,9 @@
 package testsUnitaires;
-
+/**
+ * Classe pour generer un message test
+ * @Author: Maxim Dmitriev, Vianney Veremme, Leonard Marcoux
+ * @Date: Mars 2024
+ */
 // Importez la classe Message
 import modele.communication.Message; // Import correct
 

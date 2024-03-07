@@ -22,23 +22,17 @@ public class ProgrammePrincipal {
 
         satellite.lierCentrOp(centreControle);
         satellite.lierRover(rover);
-        // System.out.println("Test Vecteurs:\n");
-        // testVect();
-        // System.out.println("\nTest Files:\n");
-        // testFile();
-        // System.out.println("\n");
 
         satellite.start();
         rover.start();
         centreControle.start();
 
-        // for (int i = 1; i <= 10; i++) {
-        // centreControle.testCommunicationCC();
-        // rover.testCommunicationRover();
-        // }
     }
 
-    // Méthode de test statique
+    /**
+     * Methode de test pour verifier les methodes a l'interieur de la classe Vect2D
+     * TODO: Enlever ce code
+     */
     public static void testVect() {
         // Création d'une instance de Vect2D pour les tests
         Vect2D vecteur1 = new Vect2D(3, 4);
@@ -55,6 +49,11 @@ public class ProgrammePrincipal {
         // Autres tests à ajouter selon les méthodes de la classe Vect2D
     }
 
+
+    /**
+     * Methode de test pour verifier les methodes a l'interieur de la classe FileChainee
+     * TODO: Enlever ce code
+     */
     public static void testFile() {
         FileChainee<Integer> file = new FileChainee<>();
 

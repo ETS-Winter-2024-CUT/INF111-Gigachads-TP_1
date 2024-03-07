@@ -1,5 +1,11 @@
 package testsUnitaires;
 
+/**
+ * Classe de test unitaire
+ * @Author: Maxim Dmitriev, Vianney Veremme, Leonard Marcoux
+ * @Date: Mars 2024
+ */
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
