@@ -22,8 +22,6 @@ package modele.satelliteRelai;
  * @version Hiver, 2024
  */
 
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,8 +37,8 @@ public class SatelliteRelai extends Thread {
 
     ReentrantLock lock = new ReentrantLock();
 
-    private final Queue<Message> fileVersCentrOp;
-    private final Queue<Message> fileVersRover; // UTILISER NOS FILES CHAINES
+    private final FileChainee<Message> fileVersCentrOp;
+    private final FileChainee<Message> fileVersRover;
 
     private Random rand = new Random();
 
@@ -58,8 +56,8 @@ public class SatelliteRelai extends Thread {
     }
 
     public SatelliteRelai() {
-        fileVersCentrOp = new LinkedList<>();
-        fileVersRover = new LinkedList<>();
+        fileVersCentrOp = new FileChainee<>();
+        fileVersRover = new FileChainee<>();
     }
 
     /**
@@ -68,12 +66,11 @@ public class SatelliteRelai extends Thread {
      * @param msg, message à envoyer
      */
     public void envoyerMessageVersCentrOp(Message msg) {
-
         lock.lock();
 
         try {
             if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
-                fileVersCentrOp.offer(msg);
+                fileVersCentrOp.ajouterElement(msg);
             } else {
                 System.out.println("SatelliteRelai: Message vers CentreControle perdu. Message #" + msg.getCompte());
             }
@@ -92,7 +89,7 @@ public class SatelliteRelai extends Thread {
 
         try {
             if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
-                fileVersRover.offer(msg);
+                fileVersRover.ajouterElement(msg);
             } else {
                 System.out.println("SatelliteRelai: Message vers Rover perdu. Message #" + msg.getCompte());
             }
@@ -106,36 +103,16 @@ public class SatelliteRelai extends Thread {
         while (true) {
             System.out.println("\nSatelliteRelai: Traitement des messages...\n");
 
-            // // Envoi des messages vers le Centre de contrôle
-            // if (!fileVersCentrOp.isEmpty()) {
-            // Message msg = fileVersCentrOp.poll();
-            // } else {
-            // System.out.println("\nSatelliteRelai: Evoi d'un message vers centre Controle!
-            // Message #"
-            // + msg.getCompte());
-            // receptionMessageDeSatellite(msg);
-            // }
-
-            // if (!fileVersRover.isEmpty()) {
-            // Message msg = fileVersRover.poll();
-            // } else {
-            // System.out.println("\nSatelliteRelai: Evoi d'un message vers Rover! Message
-            // #" + msg.getCompte());
-            // receptionMessageDeSatellite(msg);
-            // }
-
-            for (Message msg : fileVersCentrOp) {
-                // System.out.println("\nSatelliteRelai: Evoi d'un message vers Centre Controle!
-                // Message #"
-                // + msg.getCompte());
+            while (!fileVersCentrOp.estVide()) {
+                Message msg = fileVersCentrOp.enleverElement();
                 centreControle.receptionMessageDeSatellite(msg);
             }
-            for (Message msg : fileVersRover) {
-                // System.out.println("\nSatelliteRelai: Evoi d'un message vers Rover! Message
-                // #"
-                // + msg.getCompte());
+
+            while (!fileVersRover.estVide()) {
+                Message msg = fileVersRover.enleverElement();
                 rover.receptionMessageDeSatellite(msg);
             }
+
             try {
                 Thread.sleep(TEMPS_CYCLE_MS);
             } catch (InterruptedException e) {
@@ -143,5 +120,4 @@ public class SatelliteRelai extends Thread {
             }
         }
     }
-
 }
