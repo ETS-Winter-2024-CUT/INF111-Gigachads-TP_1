@@ -1,14 +1,10 @@
 package programme;
 
-import java.io.IOException;
-
 import modele.centreControle.CentreControle;
-import modele.communication.Message;
 import modele.rover.Rover;
 import modele.satelliteRelai.SatelliteRelai;
 import utilitaires.Vect2D;
 import structures.FileChainee;
-import structures.FileChainee.File;
 
 public class ProgrammePrincipal {
 
