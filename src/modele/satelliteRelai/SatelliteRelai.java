@@ -39,7 +39,7 @@ public class SatelliteRelai extends Thread {
     ReentrantLock lock = new ReentrantLock();
 
     private final Queue<Message> fileVersCentrOp;
-    private final Queue<Message> fileVersRover;
+    private final Queue<Message> fileVersRover; // UTILISER NOS FILES CHAINES
 
     private Random rand = new Random();
 
@@ -100,10 +100,11 @@ public class SatelliteRelai extends Thread {
         }
     }
 
+    // IL DOIT Y AVOIR DES BOUCLE FOR
     @Override
     public void run() {
         while (true) {
-            System.out.println("SatelliteRelai: Traitement des messages...");
+            System.out.println("\nSatelliteRelai: Traitement des messages...\n");
 
             // Envoi des messages vers le Centre de contrôle
             if (!fileVersCentrOp.isEmpty()) {
@@ -112,9 +113,9 @@ public class SatelliteRelai extends Thread {
                 if (msg == null) {
                     System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
                 } else {
-                    System.out.println("SatelliteRelai: Evoi d'un message vers centre Controle! Message #"
+                    System.out.println("\nSatelliteRelai: Evoi d'un message vers centre Controle! Message #"
                             + msg.getCompte());
-
+                    // UTILISER RECEPTIONMESSAGESATELLITE
                 }
             }
             if (!fileVersRover.isEmpty()) {
@@ -123,7 +124,8 @@ public class SatelliteRelai extends Thread {
                 if (msg == null) {
                     System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
                 } else {
-                    System.out.println("SatelliteRelai: Evoi d'un message vers Rover! Message #" + msg.getCompte());
+                    System.out.println("\nSatelliteRelai: Evoi d'un message vers Rover! Message #" + msg.getCompte());
+                    // UTILISER RECEPTIONMESSAGESATELLITE
                 }
             }
             try {
