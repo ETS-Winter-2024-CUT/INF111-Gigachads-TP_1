@@ -44,7 +44,7 @@ public class Vect2D {
 
     // Méthode pour calculer la différence entre deux Vect2D
     public Vect2D calculerDiff(Vect2D posFin) {
-        return new Vect2D(posFin.x - this.x, posFin.y - this.y);
+        return new Vect2D(this.x - posFin.x, this.y - posFin.y);
     }
 
     // Méthode pour diviser les variables membres par un facteur scalaire

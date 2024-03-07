@@ -1,7 +1,6 @@
 package programme;
 
 import modele.centreControle.CentreControle;
-import modele.communication.Message;
 import modele.rover.Rover;
 import modele.satelliteRelai.SatelliteRelai;
 import testsUnitaires.testMessage;
