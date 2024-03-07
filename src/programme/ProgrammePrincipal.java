@@ -3,7 +3,6 @@ package programme;
 import modele.centreControle.CentreControle;
 import modele.rover.Rover;
 import modele.satelliteRelai.SatelliteRelai;
-import testsUnitaires.testMessage;
 import utilitaires.Vect2D;
 import structures.FileChainee;
 
