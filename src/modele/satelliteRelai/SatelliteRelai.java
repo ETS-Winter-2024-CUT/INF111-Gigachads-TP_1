@@ -115,9 +115,9 @@ public class SatelliteRelai extends Thread {
                 Message msg = fileVersRover.poll();
 
                 if (rover == null) {
-                    rover.envoyerMessage(msg);
-                } else {
                     System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
+                } else {
+                    rover.envoyerMessage(msg);
                 }
             }
             try {
