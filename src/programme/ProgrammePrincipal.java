@@ -7,7 +7,6 @@ import modele.satelliteRelai.SatelliteRelai;
 import testsUnitaires.testMessage;
 import utilitaires.Vect2D;
 import structures.FileChainee;
-import testsUnitaires.MessageDeTest;
 
 public class ProgrammePrincipal {
 
