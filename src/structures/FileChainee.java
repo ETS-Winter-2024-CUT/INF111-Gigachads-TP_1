@@ -1,5 +1,8 @@
 package structures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Une classe représentant une file chaînée générique.
  * Une file est une structure de données qui suit le principe du premier entré,

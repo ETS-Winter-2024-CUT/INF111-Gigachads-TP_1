@@ -23,6 +23,7 @@ package modele.satelliteRelai;
  */
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -33,7 +34,7 @@ import structures.FileChainee;
 
 public class SatelliteRelai extends Thread {
     static final int TEMPS_CYCLE_MS = 500;
-    static final double PROBABILITE_PERTE_MESSAGE = 0.15;
+    static final double PROBABILITE_PERTE_MESSAGE = 0.15; // 0.15
 
     ReentrantLock lock = new ReentrantLock();
 
@@ -73,7 +74,7 @@ public class SatelliteRelai extends Thread {
                 fcControle.ajouterElement(msg);
             } else {
                 // Declarer que le message est perdu si l'interference l'emporte
-                System.out.println("Message Perdu!");
+                System.out.println("SatelliteRelais: Message vers Centre de Controle perdu!");
             }
         } finally {
             lock.unlock();
@@ -97,7 +98,7 @@ public class SatelliteRelai extends Thread {
                 fcRover.ajouterElement(msg);
             } else {
                 // Declarer que le message est perdu si l'interference l'emporte
-                System.out.println("Message Perdu!");
+                System.out.println("SatelliteRelais: Message vers Rover Perdu!");
             }
         } finally {
             lock.unlock();
@@ -108,12 +109,18 @@ public class SatelliteRelai extends Thread {
     public void run() {
         while (true) {
 
-            // Enlever les elements des 2 files
-            if (!fcControle.estVide()) {
-                fcControle.enleverElement();
+            System.out.println("SatelliteRelai: Traitement des messages...");
+
+            // Envoyer les messages du centre de contrôle vers le rover
+            while (!fcControle.estVide()) {
+                Message msg = fcControle.enleverElement();
+                rover.envoyerMessage(msg);
             }
-            if (!fcRover.estVide()) {
-                fcRover.enleverElement();
+
+            // Envoyer les messages du rover vers le centre de contrôle
+            while (!fcRover.estVide()) {
+                Message msg = fcRover.enleverElement();
+                centreControle.envoyerMessage(msg);
             }
 
             // attend le prochain cycle
