@@ -8,9 +8,6 @@ public class Rover extends TransporteurMessage {
 
     private final SatelliteRelai satelliteRelai;
 
-    // test
-    private int compte; // Variable pour stocker le nombre de messages reçus
-
     public Rover(SatelliteRelai satelliteRelai) {
         this.satelliteRelai = satelliteRelai;
         compte = 0; // Initialise le nombre de messages reçus à zéro
@@ -25,7 +22,6 @@ public class Rover extends TransporteurMessage {
     public int getCompte() {
         return compte;
     }
-    // test
 
     // Méthode permettant d'envoyer un message vers le satellite relai
     public void envoyerMessage(Message msg) {
