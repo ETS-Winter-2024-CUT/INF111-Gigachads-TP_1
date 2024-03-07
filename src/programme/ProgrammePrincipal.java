@@ -28,7 +28,7 @@ public class ProgrammePrincipal {
 
         System.out.println("Test Vecteurs:\n");
         testVect();
-        System.out.println("\n Test Files:\n");
+        System.out.println("\nTest Files:\n");
         testFile();
         System.out.println("\n");
 
@@ -36,7 +36,7 @@ public class ProgrammePrincipal {
         rover.start();
         centreControle.start();
 
-        for(int i = 1; i <= 100; i++){
+        for (int i = 1; i <= 100; i++) {
             testMessage test = new testMessage(i, "Contenu : " + i);
             centreControle.envoyerMessage(test);
         }

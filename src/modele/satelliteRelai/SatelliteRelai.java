@@ -108,7 +108,7 @@ public class SatelliteRelai extends Thread {
                 if (msg == null) {
                     System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
                 } else {
-                    System.out.println("SatelliteRelais: Evoi message vers centre Controle!" + msg.getCompte());
+                    System.out.println("SatelliteRelais: Evoi message vers centre Controle! Message #" + msg.getCompte());
                     centreControle.receptionMessageDeSatellite(msg);
                 }
             }
@@ -118,7 +118,7 @@ public class SatelliteRelai extends Thread {
                 if (msg == null) {
                     System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
                 } else {
-                    System.out.println("SatelliteRelais: Evoi message vers Rover!" + msg.getCompte());
+                    System.out.println("SatelliteRelais: Evoi message vers Rover! Message #" + msg.getCompte());
                     rover.receptionMessageDeSatellite(msg);
                 }
             }
