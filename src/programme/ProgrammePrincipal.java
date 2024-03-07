@@ -1,10 +1,12 @@
 package programme;
 
 import modele.centreControle.CentreControle;
+import modele.communication.Message;
 import modele.rover.Rover;
 import modele.satelliteRelai.SatelliteRelai;
 import utilitaires.Vect2D;
 import structures.FileChainee;
+import testsUnitaires.MessageDeTest;
 
 public class ProgrammePrincipal {
 
@@ -25,6 +27,7 @@ public class ProgrammePrincipal {
 
         testVect();
         testFile();
+        testCommunication(centreControle, rover, satellite);
 
         satellite.start();
         rover.start();
@@ -72,5 +75,25 @@ public class ProgrammePrincipal {
         } catch (IllegalStateException e) {
             System.out.println("Test réussi : exception levée car la file est vide");
         }
+    }
+
+    public static void testCommunication(CentreControle centreControle, Rover rover, SatelliteRelai satellite) {
+        // Envoyez des messages entre le rover et le centre de contrôle
+        for (int i = 0; i < 10; i++) {
+            MessageDeTest message = new MessageDeTest(i);
+            centreControle.envoyerMessage(message);
+            System.out.println("Message envoyé depuis le centre de contrôle : " + message);
+        }
+
+        // Attendre un certain temps pour que les messages soient traités par le
+        // satellite relai
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Afficher le nombre de messages reçus par le rover
+        System.out.println("Nombre de messages reçus par le rover : " + rover.getCompte());
     }
 }
