@@ -13,8 +13,6 @@ public class Rover extends TransporteurMessage {
 
     public Rover(SatelliteRelai satelliteRelai) {
         this.satelliteRelai = satelliteRelai;
-
-        // testtttttttttt
         compte = 0; // Initialise le nombre de messages reçus à zéro
     }
 
