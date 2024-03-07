@@ -35,7 +35,15 @@ package modele.communication;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+
 import java.util.concurrent.locks.ReentrantLock;
+
+import modele.communication.*;
 
 public abstract class TransporteurMessage extends Thread {
     // compteur de message
@@ -43,11 +51,21 @@ public abstract class TransporteurMessage extends Thread {
     // lock qui protège la liste de messages reçu
     private ReentrantLock lock = new ReentrantLock();
 
+    // liste de message recu par le transporteur
+    private List<Message> messagesRecus;
+    // liste de message envoyer par le transporteur
+    private List<Message> messagesEnvoyes; // is gonna be usefull later
+
+    protected Queue<Message> fileMessages = new LinkedList<>(); // File de messages reçus
+    protected boolean nackEnvoye = false; // Indique si un Nack a été envoyé
+
     /**
      * Constructeur, initialise le compteur de messages unique
      */
     public TransporteurMessage() {
         compteurMsg = new CompteurMessage();
+        this.messagesRecus = new ArrayList<>();
+        this.messagesEnvoyes = new ArrayList<>();
     }
 
     /**
@@ -61,9 +79,22 @@ public abstract class TransporteurMessage extends Thread {
         lock.lock();
 
         try {
-            /*
-             * (6.3.3) Insérer votre code ici
-             */
+            if (msg instanceof Nack) {
+                // Si le message reçu est un Nack, on le met au début de la liste
+                messagesRecus.add(0, msg);
+            } else {
+                // Sinon, on calcule sa position selon le compteur
+                int position = 0;
+                for (int i = 0; i < messagesRecus.size(); i++) {
+                    Message currentMsg = messagesRecus.get(i);
+                    if (msg.getCompte() < currentMsg.getCompte()) {
+                        break;
+                    }
+                    position++;
+                }
+                // On ajoute le message à la position voulue
+                messagesRecus.add(position, msg);
+            }
         } finally {
             lock.unlock();
         }
@@ -78,11 +109,45 @@ public abstract class TransporteurMessage extends Thread {
 
         while (true) {
             lock.lock();
-
             try {
-                /*
-                 * (6.3.4) Insérer votre code ici
-                 */
+                Message msg = fileMessages.poll(); //recupere le dernier message de la file
+
+                if (msg == null || nackEnvoye) {   //si la file est vide, ou un cacj a ete envoyer, aucune action necessaire
+                    break;
+                }
+
+                // Si le message est un Nack
+                if (msg instanceof Nack) {
+                    Nack nack = (Nack) msg;
+                    int compteManquant = nack.getCompte();
+
+                    //parcour la liste des message
+                    while (!messagesEnvoyes.isEmpty()) {
+                        Message messageEnvoye = messagesEnvoyes.peek();
+
+                        // quand on trouve le message manquant, on delete tt les message d'apres
+                        if (messageEnvoye instanceof Nack || messageEnvoye.getCompte() < compteManquant) {
+                            messagesEnvoyes.poll();
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Message à envoyer
+                    Message messageAEnvoyer = messagesEnvoyes.peek();
+                    envoyerMessage(messageAEnvoyer);
+                    messagesRecus.remove(nack);    // on eneleve le nack
+                } else if (msg.getCompte() != compteCourant) {
+                    //renvoie un nack qui dit le nombre de message manquant
+                    envoyerMessage(new Nack(compteCourant));
+                    nackEnvoye = true;
+                } else if (msg.getCompte() < compteCourant) {
+                    System.out.println("Message dupliqué rejeté : " + msg);
+                } else {
+                    gestionnaireMessage(msg);
+                    fileMessages.poll();          //Can you comment this part?!
+                    compteCourant++;
+                }
             } finally {
                 lock.unlock();
             }
