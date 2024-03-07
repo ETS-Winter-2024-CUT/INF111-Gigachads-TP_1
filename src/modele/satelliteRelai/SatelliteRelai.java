@@ -73,6 +73,8 @@ public class SatelliteRelai extends Thread {
         try {
             if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
                 fileVersCentrOp.offer(msg);
+            } else {
+                System.out.println("SatelliteRelai: Message vers CentreControle perdu. Message #" + msg.getCompte());
             }
         } finally {
             lock.unlock();
@@ -90,6 +92,8 @@ public class SatelliteRelai extends Thread {
         try {
             if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
                 fileVersRover.offer(msg);
+            } else {
+                System.out.println("SatelliteRelai: Message vers Rover perdu. Message #" + msg.getCompte());
             }
         } finally {
             lock.unlock();
@@ -106,10 +110,10 @@ public class SatelliteRelai extends Thread {
                 Message msg = fileVersCentrOp.poll();
 
                 if (msg == null) {
-                    System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
+                    System.out.println("SatelliteRelai: Message vers Centre de Controle perdu! " + msg);
                 } else {
                     System.out
-                            .println("SatelliteRelais: Evoi message vers centre Controle! Message #" + msg.getCompte());
+                            .println("SatelliteRelai: Evoi message vers centre Controle! Message #" + msg.getCompte());
                     centreControle.receptionMessageDeSatellite(msg);
                 }
             }
@@ -117,9 +121,9 @@ public class SatelliteRelai extends Thread {
                 Message msg = fileVersRover.poll();
 
                 if (msg == null) {
-                    System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
+                    System.out.println("SatelliteRelai: Message vers Rover Perdu! " + msg);
                 } else {
-                    System.out.println("SatelliteRelais: Evoi message vers Rover! Message #" + msg.getCompte());
+                    System.out.println("SatelliteRelai: Evoi message vers Rover! Message #" + msg.getCompte());
                     rover.receptionMessageDeSatellite(msg);
                 }
             }

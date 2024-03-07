@@ -169,7 +169,7 @@ public abstract class TransporteurMessage extends Thread {
 
             // Pause, cycle de traitement de messages
             try {
-                Thread.sleep(600);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
