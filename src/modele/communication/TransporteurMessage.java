@@ -119,24 +119,21 @@ public abstract class TransporteurMessage extends Thread {
                         int compteManquant = ((Nack) prochainMessage).getCompte(); // Obtient le compte du message
                                                                                    // manquant
 
-                        // Cherche ce message dans la file des messages envoyés en enlevant tous les
-                        // messages au compte inférieur
-                        // ou est instance de Nack
                         for (int i = 0; i < messagesEnvoyes.size(); i++) {
-                            if (messagesEnvoyes.get(i).getCompte() >= compteManquant
-                                    && !(messagesEnvoyes.get(i) instanceof Nack)) {
-                                break;
+                            Message messageEnvoyer = messagesEnvoyes.get(i);
+
+                            if (messageEnvoyer.getCompte() != compteManquant) {
+                                messagesEnvoyes.remove(i);
                             }
-                            messagesEnvoyes.remove(i);
-                            i--;
                         }
 
-                        // Peek le message à envoyer (obtient sans enlever)
                         Message messageAEnvoyer = messagesEnvoyes.peek();
-                        // Envoie le message à répéter
+
                         envoyerMessage(messageAEnvoyer);
+
                         // Enlève le message Nack de la liste des reçus
-                        messagesRecus.remove(prochainMessage);
+                        messagesRecus.remove(0);
+
                     } else if (prochainMessage.getCompte() > compteCourant) {
                         // S'il y a un message manquant (comparer le compteCourant)
                         // Envoie un Nack avec la valeur du message manquant (compteCourant)

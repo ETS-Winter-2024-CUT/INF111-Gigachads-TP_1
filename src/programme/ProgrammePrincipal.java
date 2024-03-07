@@ -34,8 +34,8 @@ public class ProgrammePrincipal {
         centreControle.start();
 
         // for (int i = 1; i <= 10; i++) {
-        //     centreControle.testCommunicationCC();
-        //     rover.testCommunicationRover();
+        // centreControle.testCommunicationCC();
+        // rover.testCommunicationRover();
         // }
     }
 
