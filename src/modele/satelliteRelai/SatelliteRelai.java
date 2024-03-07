@@ -30,6 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import modele.centreControle.CentreControle;
 import modele.communication.Message;
 import modele.rover.Rover;
+import modele.communication.TransporteurMessage;
 
 public class SatelliteRelai extends Thread {
 
@@ -45,6 +46,8 @@ public class SatelliteRelai extends Thread {
 
     private CentreControle centreControle;
     private Rover rover;
+
+    private TransporteurMessage transporteurMessage;
 
     // Méthode pour lier le Centre de contrôle
     public void lierCentrOp(CentreControle centreControle) {
@@ -109,6 +112,7 @@ public class SatelliteRelai extends Thread {
                     System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
                 } else {
                     centreControle.envoyerMessage(msg);
+                    transporteurMessage.receptionMessageDeSatellite(msg);
                 }
             }
             while (!fileVersRover.isEmpty()) {
@@ -118,6 +122,7 @@ public class SatelliteRelai extends Thread {
                     System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
                 } else {
                     rover.envoyerMessage(msg);
+                    transporteurMessage.receptionMessageDeSatellite(msg);
                 }
             }
             try {
