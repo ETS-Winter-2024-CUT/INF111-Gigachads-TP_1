@@ -137,13 +137,17 @@ public abstract class TransporteurMessage extends Thread {
                         envoyerMessage(messageAEnvoyer);
                         // Enlève le message Nack de la liste des reçus
                         messagesRecus.remove(prochainMessage);
-                    } else if (prochainMessage.getCompte() < compteCourant) {
+                    } else if (prochainMessage.getCompte() > compteCourant) {
                         // S'il y a un message manquant (comparer le compteCourant)
                         // Envoie un Nack avec la valeur du message manquant (compteCourant)
                         envoyerMessage(new Nack(compteCourant));
                         // Marque qu'un Nack a été envoyé (pour quitter la boucle)
                         nackEnvoye = true;
-                    } else if (prochainMessage.getCompte() == compteCourant) {
+                    } else if (prochainMessage.getCompte() < compteCourant) {
+                        // Si le compte du message est supérieur à compteCourant
+                        // Rejete le message, car il s'agit d'un duplicat
+                        messagesRecus.remove(prochainMessage);
+                    } else {
                         // Si le compte du message est égal à compteCourant
                         // Fait suivre le message au gestionnaireMessage
                         gestionnaireMessage(prochainMessage);
@@ -151,15 +155,11 @@ public abstract class TransporteurMessage extends Thread {
                         messagesRecus.remove(prochainMessage);
                         // Incrémente le compteCourant
                         compteCourant++;
-                    } else {
-                        // Si le compte du message est supérieur à compteCourant
-                        // Rejete le message, car il s'agit d'un duplicat
-                        messagesRecus.remove(prochainMessage);
                     }
-
-                    // Envoi un message NoOp
-                     envoyerMessage(new NoOp(compteurMsg.getCompteActuel()));
                 }
+
+                // Envoi un message NoOp
+                envoyerMessage(new NoOp(compteurMsg.getCompteActuel()));
             } finally {
                 lock.unlock();
             }

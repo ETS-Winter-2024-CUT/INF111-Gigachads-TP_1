@@ -34,7 +34,7 @@ import modele.rover.Rover;
 public class SatelliteRelai extends Thread {
 
     static final int TEMPS_CYCLE_MS = 500;
-    static final double PROBABILITE_PERTE_MESSAGE = 0.0;
+    static final double PROBABILITE_PERTE_MESSAGE = 0.15;
 
     ReentrantLock lock = new ReentrantLock();
 

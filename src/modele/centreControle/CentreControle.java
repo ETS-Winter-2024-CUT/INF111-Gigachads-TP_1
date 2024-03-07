@@ -28,7 +28,7 @@ public class CentreControle extends TransporteurMessage {
         // Affiche un message indiquant la réception et le traitement du message
         System.out.println("\n--CENTRE DE CONTROLE-------------\n| Message reçu - " + msg.getCompte()
                 + "\t\t|\n| Traitement du message...\t|\n| Message traité.\t\t|\n---------------------------------\n");
-        System.out.println(msg.getClass().getSimpleName());
+        System.out.println("type de message: " + msg.getClass().getSimpleName());
     }
 
     public void testCommunicationCC() {
