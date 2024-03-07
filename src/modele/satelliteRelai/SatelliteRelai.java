@@ -33,7 +33,7 @@ import modele.rover.Rover;
 
 public class SatelliteRelai extends Thread {
 
-    static final int TEMPS_CYCLE_MS = 500;
+    static final int TEMPS_CYCLE_MS = 100;
     static final double PROBABILITE_PERTE_MESSAGE = 0.15;
 
     ReentrantLock lock = new ReentrantLock();
@@ -74,7 +74,8 @@ public class SatelliteRelai extends Thread {
             if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
                 fileVersCentrOp.offer(msg);
             } else {
-                System.out.println("SatelliteRelai: Message vers CentreControle perdu. Message #" + msg.getCompte());
+                System.out.println(
+                        "\nSatelliteRelai: Perte du message vers le CentreControle. Message #" + msg.getCompte());
             }
         } finally {
             lock.unlock();
@@ -93,7 +94,7 @@ public class SatelliteRelai extends Thread {
             if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
                 fileVersRover.offer(msg);
             } else {
-                System.out.println("SatelliteRelai: Message vers Rover perdu. Message #" + msg.getCompte());
+                System.out.println("SatelliteRelai: Perte du message vers le Rover. Message #" + msg.getCompte());
             }
         } finally {
             lock.unlock();
@@ -110,10 +111,11 @@ public class SatelliteRelai extends Thread {
                 Message msg = fileVersCentrOp.poll();
 
                 if (msg == null) {
-                    System.out.println("SatelliteRelai: Message vers Centre de Controle perdu! " + msg);
+                    System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
                 } else {
                     System.out
-                            .println("SatelliteRelai: Evoi message vers centre Controle! Message #" + msg.getCompte());
+                            .println("SatelliteRelai: Evoi d'un message vers centre Controle! Message #"
+                                    + msg.getCompte());
                     centreControle.receptionMessageDeSatellite(msg);
                 }
             }
@@ -121,9 +123,9 @@ public class SatelliteRelai extends Thread {
                 Message msg = fileVersRover.poll();
 
                 if (msg == null) {
-                    System.out.println("SatelliteRelai: Message vers Rover Perdu! " + msg);
+                    System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
                 } else {
-                    System.out.println("SatelliteRelai: Evoi message vers Rover! Message #" + msg.getCompte());
+                    System.out.println("SatelliteRelai: Evoi d'un message vers Rover! Message #" + msg.getCompte());
                     rover.receptionMessageDeSatellite(msg);
                 }
             }
