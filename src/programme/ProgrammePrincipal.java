@@ -1,10 +1,7 @@
 package programme;
 
-import java.io.IOException;
-
 import modele.satelliteRelai.SatelliteRelai;
 import modele.centreControle.CentreControle;
-import modele.communication.Message;
 import modele.rover.Rover;
 import testsUnitaires.testMessage;
 

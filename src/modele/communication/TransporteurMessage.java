@@ -43,8 +43,6 @@ import java.util.Set;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import modele.communication.*;
-
 public abstract class TransporteurMessage extends Thread {
     // compteur de message
     protected CompteurMessage compteurMsg;

@@ -2,8 +2,6 @@ package modele.centreControle;
 
 import modele.communication.TransporteurMessage;
 
-import java.util.List;
-
 import modele.communication.Message;
 import modele.satelliteRelai.SatelliteRelai;
 

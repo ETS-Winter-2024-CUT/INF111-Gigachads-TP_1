@@ -4,10 +4,6 @@ import modele.communication.TransporteurMessage;
 import modele.satelliteRelai.SatelliteRelai;
 import modele.communication.Message;
 
-import java.util.List;
-
-import modele.communication.Message;
-
 public class Rover extends TransporteurMessage {
     private SatelliteRelai relaiSatellite;
 
