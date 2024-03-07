@@ -100,33 +100,38 @@ public class SatelliteRelai extends Thread {
         }
     }
 
-    // IL DOIT Y AVOIR DES BOUCLE FOR
     @Override
     public void run() {
         while (true) {
             System.out.println("\nSatelliteRelai: Traitement des messages...\n");
 
-            // Envoi des messages vers le Centre de contrôle
-            if (!fileVersCentrOp.isEmpty()) {
-                Message msg = fileVersCentrOp.poll();
+            // // Envoi des messages vers le Centre de contrôle
+            // if (!fileVersCentrOp.isEmpty()) {
+            // Message msg = fileVersCentrOp.poll();
+            // } else {
+            // System.out.println("\nSatelliteRelai: Evoi d'un message vers centre Controle!
+            // Message #"
+            // + msg.getCompte());
+            // receptionMessageDeSatellite(msg);
+            // }
 
-                if (msg == null) {
-                    System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
-                } else {
-                    System.out.println("\nSatelliteRelai: Evoi d'un message vers centre Controle! Message #"
-                            + msg.getCompte());
-                    // UTILISER RECEPTIONMESSAGESATELLITE
-                }
+            // if (!fileVersRover.isEmpty()) {
+            // Message msg = fileVersRover.poll();
+            // } else {
+            // System.out.println("\nSatelliteRelai: Evoi d'un message vers Rover! Message
+            // #" + msg.getCompte());
+            // receptionMessageDeSatellite(msg);
+            // }
+
+            for (Message msg : fileVersCentrOp) {
+                System.out.println("\nSatelliteRelai: Evoi d'un message vers Centre Controle! Message #"
+                        + msg.getCompte());
+                centreControle.receptionMessageDeSatellite(msg);
             }
-            if (!fileVersRover.isEmpty()) {
-                Message msg = fileVersRover.poll();
-
-                if (msg == null) {
-                    System.out.println("SatelliteRelai: LE MESSAGE EST NULL! " + msg);
-                } else {
-                    System.out.println("\nSatelliteRelai: Evoi d'un message vers Rover! Message #" + msg.getCompte());
-                    // UTILISER RECEPTIONMESSAGESATELLITE
-                }
+            for (Message msg : fileVersRover) {
+                System.out.println("\nSatelliteRelai: Evoi d'un message vers Rover! Message #"
+                        + msg.getCompte());
+                rover.receptionMessageDeSatellite(msg);
             }
             try {
                 Thread.sleep(TEMPS_CYCLE_MS);
@@ -135,4 +140,5 @@ public class SatelliteRelai extends Thread {
             }
         }
     }
+
 }
