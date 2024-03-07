@@ -99,22 +99,24 @@ public class SatelliteRelai extends Thread {
 
     @Override
     public void run() {
-
         while (true) {
-
             System.out.println("SatelliteRelai: Traitement des messages...");
 
             // Envoi des messages vers le Centre de contrôle
             while (!fileVersCentrOp.isEmpty()) {
                 Message msg = fileVersCentrOp.poll();
+
                 System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
+
                 if (centreControle != null) {
                     centreControle.envoyerMessage(msg);
                 }
             }
             while (!fileVersRover.isEmpty()) {
                 Message msg = fileVersRover.poll();
+
                 System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
+
                 if (rover != null) {
                     rover.envoyerMessage(msg);
                 }
@@ -126,5 +128,4 @@ public class SatelliteRelai extends Thread {
             }
         }
     }
-
 }
