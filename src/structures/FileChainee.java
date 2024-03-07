@@ -16,12 +16,12 @@ public class FileChainee<T> {
     private Noeud fin; // Référence vers le dernier nœud de la file
 
     /**
-         * Constructeur de la file.
-         */
-        public File() {
-            this.debut = null;
-            this.fin = null;
-        }
+     * Constructeur de la file.
+     */
+    public FileChainee() {
+        this.debut = null;
+        this.fin = null;
+    }
 
     /**
      * Méthode pour ajouter un élément à la fin de la file.
