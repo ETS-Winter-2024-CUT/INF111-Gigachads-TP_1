@@ -114,13 +114,13 @@ public class SatelliteRelai extends Thread {
             // Envoyer les messages du centre de contrôle vers le rover
             while (!fcControle.estVide()) {
                 Message msg = fcControle.enleverElement();
-                rover.envoyerMessage(msg);
+                rover.receptionMessageDeSatellite(msg);
             }
 
             // Envoyer les messages du rover vers le centre de contrôle
             while (!fcRover.estVide()) {
                 Message msg = fcRover.enleverElement();
-                centreControle.envoyerMessage(msg);
+                centreControle.receptionMessageDeSatellite(msg);
             }
 
             // attend le prochain cycle
