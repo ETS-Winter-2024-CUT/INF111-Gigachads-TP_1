@@ -8,8 +8,8 @@ package modele.communication;
  * au constructeur de la classe parente.
  */
 public class NoOp extends Message {
-    // paramètre "id" transmis au constructeur de la classe parente "Message"
+
     public NoOp(int compte) {
-        super(compte);
+        super(compte); // Appelle le constructeur de la classe mere (Message)
     }
 }

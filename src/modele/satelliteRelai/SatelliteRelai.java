@@ -23,31 +23,31 @@ package modele.satelliteRelai;
  */
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 import modele.centreControle.CentreControle;
 import modele.communication.Message;
 import modele.rover.Rover;
-import structures.FileChainee;
 
 public class SatelliteRelai extends Thread {
+
     static final int TEMPS_CYCLE_MS = 500;
-    static final double PROBABILITE_PERTE_MESSAGE = 0.15; // 0.15
+    static final double PROBABILITE_PERTE_MESSAGE = 0.15;
 
     ReentrantLock lock = new ReentrantLock();
 
+    private final Queue<Message> fileVersCentrOp;
+    private final Queue<Message> fileVersRover;
+
     private Random rand = new Random();
 
-    private FileChainee<Message> fcControle = new FileChainee<Message>();
-    private FileChainee<Message> fcRover = new FileChainee<Message>();
-
-    // reference au CentreControle et au Rover
     private CentreControle centreControle;
     private Rover rover;
 
-    // Méthode pour lier le CentreControle
+    // Méthode pour lier le Centre de contrôle
     public void lierCentrOp(CentreControle centreControle) {
         this.centreControle = centreControle;
     }
@@ -57,24 +57,23 @@ public class SatelliteRelai extends Thread {
         this.rover = rover;
     }
 
+    public SatelliteRelai() {
+        fileVersCentrOp = new LinkedList<>();
+        fileVersRover = new LinkedList<>();
+    }
+
     /**
      * Méthode permettant d'envoyer un message vers le centre d'opération
      *
      * @param msg, message à envoyer
      */
     public void envoyerMessageVersCentrOp(Message msg) {
+
         lock.lock();
 
         try {
-            // Declarer le num random et verifier si il peut envoyer le message
-            double randNum = rand.nextDouble();
-            if (randNum > PROBABILITE_PERTE_MESSAGE) {
-
-                // Ajouter msg a la file qui va vers le rover
-                fcControle.ajouterElement(msg);
-            } else {
-                // Declarer que le message est perdu si l'interference l'emporte
-                System.out.println("SatelliteRelais: Message vers Centre de Controle perdu!");
+            if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
+                fileVersCentrOp.offer(msg);
             }
         } finally {
             lock.unlock();
@@ -90,15 +89,8 @@ public class SatelliteRelai extends Thread {
         lock.lock();
 
         try {
-            // Declarer le num random et verifier si il peut envoyer le message
-            double randNum = rand.nextDouble();
-            if (randNum > PROBABILITE_PERTE_MESSAGE) {
-
-                // Ajouter msg a la file qui va vers le rover
-                fcRover.ajouterElement(msg);
-            } else {
-                // Declarer que le message est perdu si l'interference l'emporte
-                System.out.println("SatelliteRelais: Message vers Rover Perdu!");
+            if (rand.nextDouble() > PROBABILITE_PERTE_MESSAGE) {
+                fileVersRover.offer(msg);
             }
         } finally {
             lock.unlock();
@@ -107,23 +99,26 @@ public class SatelliteRelai extends Thread {
 
     @Override
     public void run() {
+
         while (true) {
 
             System.out.println("SatelliteRelai: Traitement des messages...");
 
-            // Envoyer les messages du centre de contrôle vers le rover
-            while (!fcControle.estVide()) {
-                Message msg = fcControle.enleverElement();
-                rover.envoyerMessage(msg);
+            // Envoi des messages vers le Centre de contrôle
+            while (!fileVersCentrOp.isEmpty()) {
+                Message msg = fileVersCentrOp.poll();
+                System.out.println("SatelliteRelais: Message vers Centre de Controle perdu! " + msg);
+                if (centreControle != null) {
+                    centreControle.envoyerMessage(msg);
+                }
             }
-
-            // Envoyer les messages du rover vers le centre de contrôle
-            while (!fcRover.estVide()) {
-                Message msg = fcRover.enleverElement();
-                centreControle.envoyerMessage(msg);
+            while (!fileVersRover.isEmpty()) {
+                Message msg = fileVersRover.poll();
+                System.out.println("SatelliteRelais: Message vers Rover Perdu! " + msg);
+                if (rover != null) {
+                    rover.envoyerMessage(msg);
+                }
             }
-
-            // attend le prochain cycle
             try {
                 Thread.sleep(TEMPS_CYCLE_MS);
             } catch (InterruptedException e) {
@@ -131,4 +126,5 @@ public class SatelliteRelai extends Thread {
             }
         }
     }
+
 }

@@ -4,32 +4,23 @@ import modele.communication.TransporteurMessage;
 import modele.satelliteRelai.SatelliteRelai;
 import modele.communication.Message;
 
-import java.util.List;
-
-import modele.communication.Message;
-
 public class Rover extends TransporteurMessage {
-    private SatelliteRelai relaiSatellite;
 
-    public Rover(SatelliteRelai relaiSatellite) {
-        this.relaiSatellite = relaiSatellite;
-        System.out.println("test rover");
+    private final SatelliteRelai satelliteRelai;
+
+    public Rover(SatelliteRelai satelliteRelai) {
+        this.satelliteRelai = satelliteRelai;
     }
 
-    // Implémentation de la méthode abstraite pour Rover
-    @Override
+    // Méthode permettant d'envoyer un message vers le satellite relai
     public void envoyerMessage(Message msg) {
-        try {
-            relaiSatellite.envoyerMessageVersCentrOp((msg));
-            messagesEnvoyes.add(msg);
-        } catch (Exception e) {
-            System.err.println("Rover: Erreur lors de l'envoi du message");
-        }
+        satelliteRelai.envoyerMessageVersCentrOp(msg); // Appelle la méthode envoyerMessageVersCentrOp du satellite
+                                                       // relai pour envoyer le message
     }
 
-    // Implémentation de la méthode abstraite pour Rover
-    @Override
-    public void gestionnaireMessage(Message msg) {
+    // Méthodepour gérer la réception d'un message
+    protected void gestionnaireMessage(Message msg) {
+        // Affiche un message indiquant la réception et le traitement du message
         System.out.println("Rover: Message reçu - " + msg.getCompte());
         System.out.println("Rover: Traitement du message...");
         System.out.println("Rover: Message traité.");

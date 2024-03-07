@@ -1,30 +1,26 @@
 package modele.centreControle;
 
 import modele.communication.TransporteurMessage;
-
-import java.util.List;
-
-import modele.communication.Message;
 import modele.satelliteRelai.SatelliteRelai;
+import modele.communication.Message;
 
 public class CentreControle extends TransporteurMessage {
-    private SatelliteRelai relaisSatellite;
 
-    public CentreControle(SatelliteRelai relaiSatelitte) {
-        this.relaisSatellite = relaiSatelitte;
-        System.out.println("test centre controle");
+    private final SatelliteRelai satelliteRelai;
+
+    public CentreControle(SatelliteRelai satelliteRelai) {
+        this.satelliteRelai = satelliteRelai;
     }
 
-    // Implémentation de la méthode abstraite pour CentreControle
-    @Override
+    // Méthode permettant d'envoyer un message vers le satellite relai
     public void envoyerMessage(Message msg) {
-        relaisSatellite.envoyerMessageVersRover(msg);
-        messagesEnvoyes.add(msg);
+        satelliteRelai.envoyerMessageVersRover(msg); // Appelle la méthode envoyerMessageVersRover du satellite relai
+                                                     // pour envoyer le message
     }
 
-    // Implémentation de la méthode abstraite pour CentreControle
-    @Override
-    public void gestionnaireMessage(Message msg) {
+    // Méthode protégée pour gérer la réception d'un message
+    protected void gestionnaireMessage(Message msg) {
+        // Affiche un message indiquant la réception et le traitement du message
         System.out.println("Centre de controle: Message reçu - " + msg.getCompte());
         System.out.println("Centre de controle: Traitement du message...");
         System.out.println("Centre de controle: Message traité.");

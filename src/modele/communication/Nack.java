@@ -8,8 +8,8 @@ package modele.communication;
  * de la classe parente.
  */
 public class Nack extends Message {
-    // paramètre "id" transmis au constructeur de la classe parente "Message"
+
     public Nack(int compte) {
-        super(compte);
+        super(compte); // Appelle le constructeur de la classe mere (Message)
     }
 }
