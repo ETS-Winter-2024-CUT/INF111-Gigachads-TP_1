@@ -1,134 +1,83 @@
 package utilitaires;
 
-/**
- * Classe Vect2D qui implémente un vecteur à deux dimensions.
- */
+import java.util.Objects;
+
 public class Vect2D {
+    private double x;
+    private double y;
 
-    // Variables membres représentant les longueurs en x et y
-    private double longueurX;
-    private double longueurY;
-
-    /**
-     * Constructeur par défaut.
-     */
+    // Constructeur par défaut
     public Vect2D() {
-        this.longueurX = 0;
-        this.longueurY = 0;
+        this(0, 0);
     }
 
-    /**
-     * Constructeur par paramètres.
-     *
-     * @param x La longueur en x.
-     * @param y La longueur en y.
-     */
+    // Constructeur par paramètres
     public Vect2D(double x, double y) {
-        this.longueurX = x;
-        this.longueurY = y;
+        this.x = x;
+        this.y = y;
     }
 
-    /**
-     * Constructeur par copie.
-     *
-     * @param other L'autre Vect2D à copier.
-     */
-    public Vect2D(Vect2D other) {
-        this.longueurX = other.getLongueurX();
-        this.longueurY = other.getLongueurY();
+    // Constructeur par copie
+    public Vect2D(Vect2D vect) {
+        this.x = vect.x;
+        this.y = vect.y;
     }
 
-    /**
-     * Accesseur informateur pour la longueur en x.
-     *
-     * @return La longueur en x.
-     */
-    public double getLongueurX() {
-        return this.longueurX;
+    // Accesseur informateur pour toutes variables membres
+    public double getX() {
+        return x;
     }
 
-    /**
-     * Accesseur informateur pour la longueur en y.
-     *
-     * @return La longueur en y.
-     */
-    public double getLongueurY() {
-        return this.longueurY;
+    public double getY() {
+        return y;
     }
 
-    /**
-     * Accesseur informateur pour la longueur du vecteur.
-     *
-     * @return La longueur du vecteur.
-     */
+    // Accesseur informateur getLongueur
     public double getLongueur() {
-        return Math.sqrt(this.longueurX * this.longueurX + this.longueurY * this.longueurY);
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
-    /**
-     * Accesseur informateur pour l'angle du vecteur.
-     *
-     * @return L'angle du vecteur.
-     */
+    // Accesseur informateur getAngle
     public double getAngle() {
-        return Math.atan2(this.longueurY, this.longueurX);
+        return Math.atan2(y, x);
     }
 
-    /**
-     * Calcule la différence entre ce vecteur et un autre.
-     *
-     * @param posFinal L'autre Vect2D.
-     * @return Un nouveau Vect2D qui est la différence.
-     */
-    public Vect2D calculerDIFF(Vect2D posFinal) {
-        return new Vect2D(posFinal.getLongueurX() - this.longueurX, posFinal.getLongueurY() - this.longueurY);
+    // Méthode pour calculer la différence entre deux Vect2D
+    public Vect2D calculerDiff(Vect2D posFin) {
+        return new Vect2D(this.x - posFin.x, this.y - posFin.y);
     }
 
-    /**
-     * Divise ce vecteur par un nombre.
-     *
-     * @param a Le nombre par lequel diviser.
-     */
+    // Méthode pour diviser les variables membres par un facteur scalaire
     public void diviser(double a) {
-        this.longueurX /= a;
-        this.longueurY /= a;
+        this.x /= a;
+        this.y /= a;
     }
 
-    /**
-     * Ajoute des coordonnées à ce vecteur.
-     *
-     * @param x La coordonnée x à ajouter.
-     * @param y La coordonnée y à ajouter.
-     */
+    // Méthode pour ajouter deux coordonnées à la classe
     public void ajouter(double x, double y) {
-        this.longueurX += x;
-        this.longueurY += y;
+        this.x += x;
+        this.y += y;
     }
 
-    /**
-     * Retourne une représentation de ce vecteur sous forme de chaîne de caractères.
-     *
-     * @return Une représentation de ce vecteur.
-     */
+    // Méthode toString
     @Override
     public String toString() {
-        return "Vect2D [ x = " + longueurX + ", y = " + longueurY + " ]";
+        return "(" + x + ", " + y + ")";
     }
 
-    /**
-     * Compare ce vecteur à un autre vecteur.
-     *
-     * @param vecteur L'autre vecteur.
-     * @return Vrai si les deux objets sont égaux, faux sinon.
-     */
+    // Méthode equals
     @Override
-    public boolean equals(Object vecteur) {
-        if (this == vecteur)
+    public boolean equals(Object o) {
+        if (this == o)
             return true;
-        if (vecteur == null || getClass() != vecteur.getClass())
+        if (o == null || getClass() != o.getClass())
             return false;
-        Vect2D vect2D = (Vect2D) vecteur;
-        return Double.compare(vect2D.longueurX, longueurX) == 0 &&
-                Double.compare(vect2D.longueurY, longueurY) == 0;
+        Vect2D vect2D = (Vect2D) o;
+        return Double.compare(vect2D.x, x) == 0 && Double.compare(vect2D.y, y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 }

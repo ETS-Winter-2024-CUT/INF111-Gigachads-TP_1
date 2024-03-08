@@ -5,7 +5,7 @@ package modele.communication;
  * et le Centre d'opération.
  *
  * Il se base sur une interprétation libre du concept de Nack:
- *     https://webrtcglossary.com/nack/
+ * 	https://webrtcglossary.com/nack/
  *
  * Les messages envoyés sont mémorisé. À l'aide du compte unique
  * le transporteur de message peut identifier les Messages manquant
@@ -35,37 +35,29 @@ package modele.communication;
  */
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.Set;
-
+import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
-import modele.communication.*;
-
 public abstract class TransporteurMessage extends Thread {
+
     // compteur de message
     protected CompteurMessage compteurMsg;
     // lock qui protège la liste de messages reçu
     private ReentrantLock lock = new ReentrantLock();
 
-    // liste de message recu par le transporteur
-    private List<Message> messagesRecus;
-    // liste de message envoyer par le transporteur
-    private List<Message> messagesEnvoyes; // is gonna be usefull later
-
-    protected Queue<Message> fileMessages = new LinkedList<>(); // File de messages reçus
-    protected boolean nackEnvoye = false; // Indique si un Nack a été envoyé
+    // Liste pour stocker les messages reçus
+    protected List<Message> messagesRecus;
+    // Liste pour stocker les messages envoyés
+    protected LinkedList<Message> messagesEnvoyes; // apparement I need that for peek
 
     /**
      * Constructeur, initialise le compteur de messages unique
      */
     public TransporteurMessage() {
         compteurMsg = new CompteurMessage();
-        this.messagesRecus = new ArrayList<>();
-        this.messagesEnvoyes = new ArrayList<>();
+        messagesRecus = new ArrayList<>();
+        messagesEnvoyes = new LinkedList<>();
     }
 
     /**
@@ -75,24 +67,25 @@ public abstract class TransporteurMessage extends Thread {
      *
      * @param msg, message reçu
      */
+    // 6.3.3
     public void receptionMessageDeSatellite(Message msg) {
         lock.lock();
 
         try {
             if (msg instanceof Nack) {
-                // Si le message reçu est un Nack, on le met au début de la liste
+                // Si c'est un Nack, ajoutez le message au début de la liste des messages reçus
                 messagesRecus.add(0, msg);
             } else {
-                // Sinon, on calcule sa position selon le compteur
+                // Sinon, évaluez la position du message dans la liste en fonction du compte du
+                // message
                 int position = 0;
-                for (int i = 0; i < messagesRecus.size(); i++) {
-                    Message currentMsg = messagesRecus.get(i);
-                    if (msg.getCompte() < currentMsg.getCompte()) {
+                for (Message m : messagesRecus) {
+                    if (msg.getCompte() < m.getCompte()) {
                         break;
                     }
                     position++;
                 }
-                // On ajoute le message à la position voulue
+                // Ajoutez le message à la position trouvée
                 messagesRecus.add(position, msg);
             }
         } finally {
@@ -104,57 +97,73 @@ public abstract class TransporteurMessage extends Thread {
     /**
      * Tâche effectuant la gestion des messages reçu
      */
+    // 6.3.4
     public void run() {
+        // Initialise le compteur de message courant
         int compteCourant = 0;
 
-        while (true) {
+        while (true) { // Boucle infinie
+
             lock.lock();
+
             try {
-                Message msg = fileMessages.poll(); //recupere le dernier message de la file
+                // Indique si un Nack a été envoyé
+                boolean nackEnvoye = false;
+                // Tant qu'il y a des messages et qu'aucun Nack n'a été envoyé
+                while (!messagesRecus.isEmpty() && !nackEnvoye) {
+                    // Obtient le prochain message à gérer (début de la liste)
+                    Message prochainMessage = messagesRecus.get(0);
 
-                if (msg == null || nackEnvoye) {   //si la file est vide, ou un cacj a ete envoyer, aucune action necessaire
-                    break;
-                }
+                    if (prochainMessage instanceof Nack) {
+                        // S'il s'agit d'un Nack
+                        int compteManquant = ((Nack) prochainMessage).getCompte(); // Obtient le compte du message
+                                                                                   // manquant
 
-                // Si le message est un Nack
-                if (msg instanceof Nack) {
-                    Nack nack = (Nack) msg;
-                    int compteManquant = nack.getCompte();
+                        for (int i = 0; i < messagesEnvoyes.size(); i++) {
+                            Message messageEnvoyer = messagesEnvoyes.get(i);
 
-                    //parcour la liste des message
-                    while (!messagesEnvoyes.isEmpty()) {
-                        Message messageEnvoye = messagesEnvoyes.peek();
-
-                        // quand on trouve le message manquant, on delete tt les message d'apres
-                        if (messageEnvoye instanceof Nack || messageEnvoye.getCompte() < compteManquant) {
-                            messagesEnvoyes.poll();
-                        } else {
-                            break;
+                            if (messageEnvoyer.getCompte() != compteManquant) {
+                                messagesEnvoyes.remove(i);
+                            }
                         }
-                    }
 
-                    // Message à envoyer
-                    Message messageAEnvoyer = messagesEnvoyes.peek();
-                    envoyerMessage(messageAEnvoyer);
-                    messagesRecus.remove(nack);    // on eneleve le nack
-                } else if (msg.getCompte() != compteCourant) {
-                    //renvoie un nack qui dit le nombre de message manquant
-                    envoyerMessage(new Nack(compteCourant));
-                    nackEnvoye = true;
-                } else if (msg.getCompte() < compteCourant) {
-                    System.out.println("Message dupliqué rejeté : " + msg);
-                } else {
-                    gestionnaireMessage(msg);
-                    fileMessages.poll();          //Can you comment this part?!
-                    compteCourant++;
+                        Message messageAEnvoyer = messagesEnvoyes.peek();
+
+                        envoyerMessage(messageAEnvoyer);
+
+                        // Enlève le message Nack de la liste des reçus
+                        messagesRecus.remove(0);
+
+                    } else if (prochainMessage.getCompte() > compteCourant) {
+                        // S'il y a un message manquant (comparer le compteCourant)
+                        // Envoie un Nack avec la valeur du message manquant (compteCourant)
+                        envoyerMessage(new Nack(compteCourant));
+                        // Marque qu'un Nack a été envoyé (pour quitter la boucle)
+                        nackEnvoye = true;
+                    } else if (prochainMessage.getCompte() < compteCourant) {
+                        // Si le compte du message est supérieur à compteCourant
+                        // Rejete le message, car il s'agit d'un duplicat
+                        messagesRecus.remove(prochainMessage);
+                    } else {
+                        // Si le compte du message est égal à compteCourant
+                        // Fait suivre le message au gestionnaireMessage
+                        gestionnaireMessage(prochainMessage);
+                        // Défile le message
+                        messagesRecus.remove(prochainMessage);
+                        // Incrémente le compteCourant
+                        compteCourant++;
+                    }
                 }
+
+                // Envoi un message NoOp
+                envoyerMessage(new NoOp(compteurMsg.getCompteActuel()));
             } finally {
                 lock.unlock();
             }
 
-            // pause, cycle de traitement de messages
+            // Pause, cycle de traitement de messages
             try {
-                Thread.sleep(1000);
+                Thread.sleep(650);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -174,4 +183,5 @@ public abstract class TransporteurMessage extends Thread {
      * @param msg, le message à traiter
      */
     abstract protected void gestionnaireMessage(Message msg);
+
 }
