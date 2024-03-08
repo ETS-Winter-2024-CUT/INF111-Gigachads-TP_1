@@ -1,19 +1,25 @@
 package testsUnitaires;
 
+/**
+ * Classe de test unitaire
+ * @Author: Maxim Dmitriev, Vianney Veremme, Leonard Marcoux
+ * @Date: Mars 2024
+ */
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import structures.FileChainee;
 
 public class TestFileChainee {
 
-    public static void main(String[] args) {
-        testFileChainee();
-    }
-
-    public static void testFileChainee() {
+    @Test
+    public void testFileChainee() {
         // Création d'une file chaînée d'entiers
         FileChainee<Integer> file = new FileChainee<>();
 
         // Test de la méthode estVide après la création de la file
-        System.out.println("La file est vide ? " + file.estVide()); // Devrait afficher true
+        assertTrue(file.estVide(), "La file devrait être vide.");
 
         // Test d'ajout d'éléments
         file.ajouterElement(10);
@@ -21,26 +27,24 @@ public class TestFileChainee {
         file.ajouterElement(30);
 
         // Test de la méthode estVide après avoir ajouté des éléments
-        System.out.println("La file est vide ? " + file.estVide()); // Devrait afficher false
+        assertFalse(file.estVide(), "La file ne devrait pas être vide après avoir ajouté des éléments.");
 
         // Test de la méthode enleverElement
-        System.out.println("Élément enlevé : " + file.enleverElement()); // Devrait afficher 10
-        System.out.println("Élément enlevé : " + file.enleverElement()); // Devrait afficher 20
+        assertEquals(10, file.enleverElement(), "L'élément enlevé devrait être 10.");
+        assertEquals(20, file.enleverElement(), "L'élément enlevé devrait être 20.");
 
         // Test après avoir enlevé deux des trois éléments
-        System.out.println("La file est vide ? " + file.estVide()); // Devrait afficher false
+        assertFalse(file.estVide(), "La file ne devrait pas être vide après avoir enlevé des éléments.");
 
         // Test d'enlèvement du dernier élément
-        System.out.println("Élément enlevé : " + file.enleverElement()); // Devrait afficher 30
+        assertEquals(30, file.enleverElement(), "L'élément enlevé devrait être 30.");
 
         // Test après avoir enlevé tous les éléments
-        System.out.println("La file est vide ? " + file.estVide()); // Devrait afficher true
+        assertTrue(file.estVide(), "La file devrait être vide après avoir enlevé tous les éléments.");
 
         // Tentative d'enlever un élément d'une file vide (devrait lever une exception)
-        try {
-            System.out.println("Élément enlevé : " + file.enleverElement());
-        } catch (IllegalStateException e) {
-            System.out.println("Exception attrapée : " + e.getMessage());
-        }
+        assertThrows(IllegalStateException.class, () -> {
+            file.enleverElement();
+        }, "Devrait lever une exception lorsque l'on essaie d'enlever un élément d'une file vide.");
     }
 }

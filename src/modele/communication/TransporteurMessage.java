@@ -47,9 +47,9 @@ public abstract class TransporteurMessage extends Thread {
     private ReentrantLock lock = new ReentrantLock();
 
     // Liste pour stocker les messages reçus
-    private List<Message> messagesRecus;
+    protected List<Message> messagesRecus;
     // Liste pour stocker les messages envoyés
-    private LinkedList<Message> messagesEnvoyes; // apparement I need that for peek
+    protected LinkedList<Message> messagesEnvoyes; // apparement I need that for peek
 
     /**
      * Constructeur, initialise le compteur de messages unique
@@ -101,14 +101,14 @@ public abstract class TransporteurMessage extends Thread {
     public void run() {
         // Initialise le compteur de message courant
         int compteCourant = 0;
-        // Indique si un Nack a été envoyé
-        boolean nackEnvoye = false;
 
         while (true) { // Boucle infinie
 
             lock.lock();
 
             try {
+                // Indique si un Nack a été envoyé
+                boolean nackEnvoye = false;
                 // Tant qu'il y a des messages et qu'aucun Nack n'a été envoyé
                 while (!messagesRecus.isEmpty() && !nackEnvoye) {
                     // Obtient le prochain message à gérer (début de la liste)
@@ -119,31 +119,32 @@ public abstract class TransporteurMessage extends Thread {
                         int compteManquant = ((Nack) prochainMessage).getCompte(); // Obtient le compte du message
                                                                                    // manquant
 
-                        // Cherche ce message dans la file des messages envoyés en enlevant tous les
-                        // messages au compte inférieur
-                        // ou est instance de Nack
                         for (int i = 0; i < messagesEnvoyes.size(); i++) {
-                            if (messagesEnvoyes.get(i).getCompte() >= compteManquant
-                                    && !(messagesEnvoyes.get(i) instanceof Nack)) {
-                                break;
+                            Message messageEnvoyer = messagesEnvoyes.get(i);
+
+                            if (messageEnvoyer.getCompte() != compteManquant) {
+                                messagesEnvoyes.remove(i);
                             }
-                            messagesEnvoyes.remove(i);
-                            i--;
                         }
 
-                        // Peek le message à envoyer (obtient sans enlever)
                         Message messageAEnvoyer = messagesEnvoyes.peek();
-                        // Envoie le message à répéter
+
                         envoyerMessage(messageAEnvoyer);
+
                         // Enlève le message Nack de la liste des reçus
-                        messagesRecus.remove(prochainMessage);
-                    } else if (prochainMessage.getCompte() < compteCourant) {
+                        messagesRecus.remove(0);
+
+                    } else if (prochainMessage.getCompte() > compteCourant) {
                         // S'il y a un message manquant (comparer le compteCourant)
                         // Envoie un Nack avec la valeur du message manquant (compteCourant)
                         envoyerMessage(new Nack(compteCourant));
                         // Marque qu'un Nack a été envoyé (pour quitter la boucle)
                         nackEnvoye = true;
-                    } else if (prochainMessage.getCompte() == compteCourant) {
+                    } else if (prochainMessage.getCompte() < compteCourant) {
+                        // Si le compte du message est supérieur à compteCourant
+                        // Rejete le message, car il s'agit d'un duplicat
+                        messagesRecus.remove(prochainMessage);
+                    } else {
                         // Si le compte du message est égal à compteCourant
                         // Fait suivre le message au gestionnaireMessage
                         gestionnaireMessage(prochainMessage);
@@ -151,25 +152,18 @@ public abstract class TransporteurMessage extends Thread {
                         messagesRecus.remove(prochainMessage);
                         // Incrémente le compteCourant
                         compteCourant++;
-                    } else {
-                        // Si le compte du message est supérieur à compteCourant
-                        // Rejete le message, car il s'agit d'un duplicat
-                        messagesRecus.remove(prochainMessage);
                     }
                 }
+
+                // Envoi un message NoOp
+                envoyerMessage(new NoOp(compteurMsg.getCompteActuel()));
             } finally {
                 lock.unlock();
             }
 
-            // Obtient un nouveau compte unique (CompteurMsg)
-            compteCourant = compteurMsg.getCompteActuel();
-            // Envoi un message NoOp
-            envoyerMessage(new NoOp(compteCourant));
-            nackEnvoye = false; // Réinitialise nackEnvoye pour la prochaine boucle
-
             // Pause, cycle de traitement de messages
             try {
-                Thread.sleep(1000);
+                Thread.sleep(650);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
